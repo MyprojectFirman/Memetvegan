@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Gudang</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 720px;
+            background: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form div {
+            margin-bottom: 10px;
+        }
+        form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        form input, form select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        form button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.5/dist/sweetalert2.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Daftar Barang</h2>
+
+        <form id="dataForm">
+            <div>
+                <label for="nama_barang">Nama Barang:</label>
+                <input type="text" id="nama_barang" name="nama_barang" required>
+            </div>
+            <div>
+                <label for="satuan">Satuan:</label>
+                <select id="satuan" name="satuan" required>
+                        <option value="KG">KG</option>
+                        <option value="Ons">Ons</option>
+                        <option value="Bal">Bal</option>
+                        <option value="Ikat">Ikat</option>
+                        <option value="Besek">Besek</option>
+                        <option value="Blok">Blok</option>
+                        <option value="Liter">Liter</option>
+                        <option value="Pax">Pax</option>
+                        <option value="Pcs">Pcs</option>
+                </select>
+            </div>
+            <div>
+                <label for="harga">Harga:</label>
+                <input type="text" id="harga" name="harga" required oninput="formatHarga(this)">
+            </div>
+            <button type="button" onclick="addRow()">Add to Table</button>
+        </form>
+
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Barang</th>
+                    <th>Satuan</th>
+                    <th>Harga</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added here by JavaScript -->
+            </tbody>
+        </table>
+
+        <div class="button-container">
+            <button onclick="downloadCSV()">Download CSV</button>
+            <button onclick="downloadHTML()">Download HTML</button>
+            <button onclick="downloadPDF()">Download PDF</button>
+            <button onclick="clearLocalStorage()">Clear Data</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let idCounter = 1;
+
+        function addRow() {
+            // Ensure all form fields are filled
+            const form = document.getElementById('dataForm');
+            if (!form.checkValidity()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please fill all fields.'
+                });
+                return;
+            }
+
+            const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            const row = table.insertRow();
+
+            const nama_barang = document.getElementById('nama_barang').value;
+            const satuan = document.getElementById('satuan').value;
+            const harga = document.getElementById('harga').value.replace(/,/g, '');
+
+            row.insertCell(0).innerHTML = idCounter++;
+            row.insertCell(1).innerHTML = nama_barang;
+            row.insertCell(2).innerHTML = satuan;
+            row.insertCell(3).innerHTML = 'Rp. ' + formatCurrency(harga);
+
+            // Save to localStorage
+            saveToLocalStorage(nama_barang, satuan, harga);
+
+            // Clear form fields
+            form.reset();
+        }
+
+        function formatCurrency(value) {
+            return parseFloat(value).toLocaleString('en', {minimumFractionDigits: 0});
+        }
+
+        function formatHarga(input) {
+            const value = input.value.replace(/[^0-9]/g, '');
+            input.value = formatCurrency(value);
+        }
+
+        function saveToLocalStorage(nama_barang, satuan, harga) {
+            let data = JSON.parse(localStorage.getItem('dataGudang')) || [];
+            data.push({
+                id: idCounter - 1,
+                nama_barang: nama_barang,
+                satuan: satuan,
+                harga: 'Rp. ' + formatCurrency(harga)
+            });
+            localStorage.setItem('dataGudang', JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage() {
+            const storedData = JSON.parse(localStorage.getItem('dataGudang')) || [];
+            const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            storedData.forEach(item => {
+                const row = table.insertRow();
+                row.insertCell(0).innerHTML = item.id;
+                row.insertCell(1).innerHTML = item.nama_barang;
+                row.insertCell(2).innerHTML = item.satuan;
+                row.insertCell(3).innerHTML = item.harga;
+            });
+            idCounter = storedData.length > 0 ? storedData[storedData.length - 1].id + 1 : 1;
+        }
+
+        function downloadCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "ID,Nama Barang,Satuan,Harga\n";
+
+            const rows = document.querySelectorAll("#dataTable tbody tr");
+            rows.forEach(row => {
+                const cols = row.querySelectorAll("td");
+                const rowContent = Array.from(cols).map(col => col.innerText.replace(/,/g, '')).join(",");
+                csvContent += rowContent + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "data_gudang.csv");
+            document.body.appendChild(link);
+
+            link.click();
+        }
+
+        function downloadHTML() {
+            const table = document.getElementById('dataTable').outerHTML;
+            const blob = new Blob([table], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'data_gudang.html';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const logo = new Image();
+    logo.src = '1.png'; // Replace with the path to your logo
+
+    logo.onload = function() {
+        const pageWidth = doc.internal.pageSize.width;
+        const logoSize = 30; // Logo size
+        const topMargin = 20; // Margin from the top of the page
+        const addressWidth = 80; // Width for the address details area
+        const addressMarginRight = 10; // Margin from the right edge of the page
+
+        // Add logo image to the PDF with a size of 30x30 pixels
+        doc.addImage(logo, 'PNG', topMargin, topMargin, logoSize, logoSize); // Align logo to the left margin
+
+        // Add address and phone number details with alignment to the right, 10px from the right edge
+        doc.setFontSize(12);
+        const addressXPosition = pageWidth - addressWidth - addressMarginRight; // X position for address details
+        doc.text('MEMET VEGETABLES', addressXPosition, topMargin);
+        doc.text('JL. GADANG GG.4, MALANG, JAWA TIMUR', addressXPosition, topMargin + 10);
+        doc.text('Phone: 0812-5259-0580', addressXPosition, topMargin + 20);
+
+        // Center the "Daftar Barang" text horizontally, 30px below the top section
+        doc.setFontSize(16);
+        const textWidth = doc.getTextWidth('Daftar Barang');
+        const textXPosition = (pageWidth - textWidth) / 2;
+        const textYPosition = topMargin + logoSize + 30; // 30px gap below the logo and address details
+        doc.text('Daftar Barang', textXPosition, textYPosition); // Position the header text
+
+        // Set the margin and available width for the table
+        const margin = 20;
+        const tableWidth = pageWidth - 2 * margin;
+
+        // Add table with centered header text and adjusted width
+        doc.autoTable({
+            html: '#dataTable',
+            startY: textYPosition + 10, // Add space below "Daftar Barang"
+            margin: { left: margin, right: margin },
+            tableWidth: tableWidth,
+            styles: {
+                overflow: 'linebreak', // Wrap long text
+                lineColor: [0, 0, 0], // Table line color
+                lineWidth: 0.75 // Table line width
+            },
+            headStyles: {
+                fillColor: [67, 255, 80], // Header background color (gray)
+                textColor: [0, 0, 0], // Header text color (white)
+                lineColor: [0, 0, 0], // Header line color
+                lineWidth: 0.75, // Header line width
+                halign: 'center' // Center align header text
+            },
+            bodyStyles: {
+                fillColor: [255, 255, 255], // Body background color (white)
+                lineColor: [0, 0, 0], // Body line color
+                lineWidth: 0.75 // Body line width
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245] // Alternating row background color (light gray)
+            },
+            theme: 'striped', // Table theme
+            head: [
+                ['ID', 'Nama Barang', 'Satuan', 'Harga']
+            ],
+            columnStyles: {
+                0: { cellWidth: tableWidth * 0.1, halign: 'center' }, // 10% of table width
+                1: { cellWidth: tableWidth * 0.4, halign: 'center' }, // 40% of table width
+                2: { cellWidth: tableWidth * 0.2, halign: 'center' }, // 20% of table width
+                3: { cellWidth: tableWidth * 0.3, halign: 'center' }  // 30% of table width
+            }
+        });
+
+        // Save PDF
+        doc.save('Memet_Vegetables.pdf');
+    };
+
+    logo.onerror = function() {
+        console.error('Logo image failed to load.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Logo image failed to load. Please check the path.'
+        });
+    };
+}
+
+        function clearLocalStorage() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, clear it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('dataGudang');
+                    location.reload();
+                }
+            });
+        }
+
+        window.onload = loadFromLocalStorage;
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+</body>
+</html>
