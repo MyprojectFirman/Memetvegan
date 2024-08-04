@@ -6,8 +6,9 @@
     <title>Data Gudang</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, black, #203a43, green);
+            color: #ffffff;
             margin: 0;
             padding: 0;
             display: flex;
@@ -15,62 +16,93 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         .container {
             width: 90%;
-            max-width: 720px;
-            background: #fff;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
             padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+        .logo {
+            position: relative;
+            top: 10px;
+            left: 10px;
+            margin-bottom: 30px;
+            width: 100px;
+            height: 100px;
+            border-radius: 40%;
+            border: 2px solid white;
         }
         h2 {
             margin-top: 20px;
+            text-align: center;
+            color: #00ff54;
+text-shadow: 2px 2px 5px black;
+text-transform: uppercase;
+            letter-spacing: 2px;
         }
         form {
             margin-bottom: 20px;
         }
         form div {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
         }
         form label {
-            display: block;
             margin-bottom: 5px;
+            color: #00ff54;
+            text-shadow: 2px 2px 5px black;
+
         }
         form input, form select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            box-shadow: 5px 10px black;
+            font-size: 16px;
+            outline: none;
+            flex: 1;
         }
         form button {
-            width: 100%;
             padding: 10px;
-            background-color: #28a745;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            box-shadow: 5px 10px black;
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            transition: background 0.3s ease-in-out;
+            width: 100%;
         }
         form button:hover {
-            background-color: #218838;
+            background: linear-gradient(45deg, green, #00c6ff);
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            color: #fff;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #00ffff;
             padding: 8px;
             text-align: center;
         }
         th {
-            background-color: #f2f2f2;
+            background: rgba(67, 255, 76, 0.2);
         }
         tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background: rgba(255, 255, 255, 0.1);
         }
         .button-container {
             text-align: center;
@@ -79,21 +111,22 @@
         .button-container button {
             padding: 10px 20px;
             margin: 5px;
-            background-color: #007bff;
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            transition: background 0.3s ease-in-out;
         }
         .button-container button:hover {
-            background-color: #0056b3;
+            background: linear-gradient(45deg, #0072ff, #00c6ff);
         }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.5/dist/sweetalert2.min.css">
 </head>
 <body>
     <div class="container">
+        <img src="1.png" alt="Logo" class="logo"> <!-- Add your logo here -->
         <h2>Daftar Barang</h2>
 
         <form id="dataForm">
@@ -104,15 +137,15 @@
             <div>
                 <label for="satuan">Satuan:</label>
                 <select id="satuan" name="satuan" required>
-                        <option value="KG">KG</option>
-                        <option value="Ons">Ons</option>
-                        <option value="Bal">Bal</option>
-                        <option value="Ikat">Ikat</option>
-                        <option value="Besek">Besek</option>
-                        <option value="Blok">Blok</option>
-                        <option value="Liter">Liter</option>
-                        <option value="Pax">Pax</option>
-                        <option value="Pcs">Pcs</option>
+                    <option value="KG">KG</option>
+                    <option value="Ons">Ons</option>
+                    <option value="Bal">Bal</option>
+                    <option value="Ikat">Ikat</option>
+                    <option value="Besek">Besek</option>
+                    <option value="Blok">Blok</option>
+                    <option value="Liter">Liter</option>
+                    <option value="Pax">Pax</option>
+                    <option value="Pcs">Pcs</option>
                 </select>
             </div>
             <div>
@@ -145,11 +178,12 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script>
         let idCounter = 1;
 
         function addRow() {
-            // Ensure all form fields are filled
             const form = document.getElementById('dataForm');
             if (!form.checkValidity()) {
                 Swal.fire({
@@ -172,10 +206,8 @@
             row.insertCell(2).innerHTML = satuan;
             row.insertCell(3).innerHTML = 'Rp. ' + formatCurrency(harga);
 
-            // Save to localStorage
             saveToLocalStorage(nama_barang, satuan, harga);
 
-            // Clear form fields
             form.reset();
         }
 
@@ -219,7 +251,7 @@
             const rows = document.querySelectorAll("#dataTable tbody tr");
             rows.forEach(row => {
                 const cols = row.querySelectorAll("td");
-                const rowContent = Array.from(cols).map(col => col.innerText.replace(/,/g, '')).join(",");
+const rowContent = Array.from(cols).map(col => col.innerText.replace(/,/g, '')).join(",");
                 csvContent += rowContent + "\n";
             });
 
@@ -228,8 +260,8 @@
             link.setAttribute("href", encodedUri);
             link.setAttribute("download", "data_gudang.csv");
             document.body.appendChild(link);
-
             link.click();
+            document.body.removeChild(link);
         }
 
         function downloadHTML() {
@@ -245,90 +277,84 @@
         }
 
         function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const logo = new Image();
-    logo.src = '1.png'; // Replace with the path to your logo
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const logo = new Image();
+            logo.src = '1.png'; // Replace with the path to your logo
 
-    logo.onload = function() {
-        const pageWidth = doc.internal.pageSize.width;
-        const logoSize = 30; // Logo size
-        const topMargin = 20; // Margin from the top of the page
-        const addressWidth = 80; // Width for the address details area
-        const addressMarginRight = 10; // Margin from the right edge of the page
+            logo.onload = function() {
+                const pageWidth = doc.internal.pageSize.width;
+                const logoSize = 30; // Logo size
+                const topMargin = 20; // Margin from the top of the page
+                const addressWidth = 80; // Width for the address details area
+                const addressMarginRight = 10; // Margin from the right edge of the page
 
-        // Add logo image to the PDF with a size of 30x30 pixels
-        doc.addImage(logo, 'PNG', topMargin, topMargin, logoSize, logoSize); // Align logo to the left margin
+                doc.addImage(logo, 'PNG', topMargin, topMargin, logoSize, logoSize);
 
-        // Add address and phone number details with alignment to the right, 10px from the right edge
-        doc.setFontSize(12);
-        const addressXPosition = pageWidth - addressWidth - addressMarginRight; // X position for address details
-        doc.text('MEMET VEGETABLES', addressXPosition, topMargin);
-        doc.text('JL. GADANG GG.4, MALANG, JAWA TIMUR', addressXPosition, topMargin + 10);
-        doc.text('Phone: 0812-5259-0580', addressXPosition, topMargin + 20);
+                doc.setFontSize(12);
+                const addressXPosition = pageWidth - addressWidth - addressMarginRight;
+                doc.text('MEMET VEGETABLES', addressXPosition, topMargin);
+                doc.text('JL. GADANG GG.4, MALANG, JAWA TIMUR', addressXPosition, topMargin + 10);
+                doc.text('Phone: 0812-5259-0580', addressXPosition, topMargin + 20);
 
-        // Center the "Daftar Barang" text horizontally, 30px below the top section
-        doc.setFontSize(16);
-        const textWidth = doc.getTextWidth('Daftar Barang');
-        const textXPosition = (pageWidth - textWidth) / 2;
-        const textYPosition = topMargin + logoSize + 30; // 30px gap below the logo and address details
-        doc.text('Daftar Barang', textXPosition, textYPosition); // Position the header text
+                doc.setFontSize(16);
+                const textWidth = doc.getTextWidth('Daftar Barang');
+                const textXPosition = (pageWidth - textWidth) / 2;
+                const textYPosition = topMargin + logoSize + 30;
+                doc.text('Daftar Barang', textXPosition, textYPosition);
 
-        // Set the margin and available width for the table
-        const margin = 20;
-        const tableWidth = pageWidth - 2 * margin;
+                const margin = 20;
+                const tableWidth = pageWidth - 2 * margin;
 
-        // Add table with centered header text and adjusted width
-        doc.autoTable({
-            html: '#dataTable',
-            startY: textYPosition + 10, // Add space below "Daftar Barang"
-            margin: { left: margin, right: margin },
-            tableWidth: tableWidth,
-            styles: {
-                overflow: 'linebreak', // Wrap long text
-                lineColor: [0, 0, 0], // Table line color
-                lineWidth: 0.75 // Table line width
-            },
-            headStyles: {
-                fillColor: [67, 255, 80], // Header background color (gray)
-                textColor: [0, 0, 0], // Header text color (white)
-                lineColor: [0, 0, 0], // Header line color
-                lineWidth: 0.75, // Header line width
-                halign: 'center' // Center align header text
-            },
-            bodyStyles: {
-                fillColor: [255, 255, 255], // Body background color (white)
-                lineColor: [0, 0, 0], // Body line color
-                lineWidth: 0.75 // Body line width
-            },
-            alternateRowStyles: {
-                fillColor: [245, 245, 245] // Alternating row background color (light gray)
-            },
-            theme: 'striped', // Table theme
-            head: [
-                ['ID', 'Nama Barang', 'Satuan', 'Harga']
-            ],
-            columnStyles: {
-                0: { cellWidth: tableWidth * 0.1, halign: 'center' }, // 10% of table width
-                1: { cellWidth: tableWidth * 0.4, halign: 'center' }, // 40% of table width
-                2: { cellWidth: tableWidth * 0.2, halign: 'center' }, // 20% of table width
-                3: { cellWidth: tableWidth * 0.3, halign: 'center' }  // 30% of table width
-            }
-        });
+                doc.autoTable({
+                    html: '#dataTable',
+                    startY: textYPosition + 10,
+                    margin: { left: margin, right: margin },
+                    tableWidth: tableWidth,
+                    styles: {
+                        overflow: 'linebreak',
+                        lineColor: [0, 0, 0],
+                        lineWidth: 0.75
+                    },
+                    headStyles: {
+                        fillColor: [67, 255, 80],
+                        textColor: [0, 0, 0],
+                        lineColor: [0, 0, 0],
+                        lineWidth: 0.75,
+                        halign: 'center'
+                    },
+                    bodyStyles: {
+                        fillColor: [255, 255, 255],
+                        lineColor: [0, 0, 0],
+                        lineWidth: 0.75
+                    },
+                    alternateRowStyles: {
+                        fillColor: [245, 245, 245]
+                    },
+                    theme: 'striped',
+                    head: [
+                        ['ID', 'Nama Barang', 'Satuan', 'Harga']
+                    ],
+                    columnStyles: {
+                        0: { cellWidth: tableWidth * 0.1, halign: 'center' },
+                        1: { cellWidth: tableWidth * 0.4, halign: 'center' },
+                        2: { cellWidth: tableWidth * 0.2, halign: 'center' },
+                        3: { cellWidth: tableWidth * 0.3, halign: 'center' }
+                    }
+                });
 
-        // Save PDF
-        doc.save('Memet_Vegetables.pdf');
-    };
+                doc.save('Memet_Vegetables.pdf');
+            };
 
-    logo.onerror = function() {
-        console.error('Logo image failed to load.');
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Logo image failed to load. Please check the path.'
-        });
-    };
-}
+            logo.onerror = function() {
+                console.error('Logo image failed to load.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Logo image failed to load. Please check the path.'
+                });
+            };
+        }
 
         function clearLocalStorage() {
             Swal.fire({
@@ -349,7 +375,5 @@
 
         window.onload = loadFromLocalStorage;
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 </body>
 </html>
