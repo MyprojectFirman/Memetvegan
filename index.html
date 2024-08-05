@@ -3,377 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Gudang</title>
+    <title>Invoice Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, black, #203a43, green);
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
         }
         .container {
-            width: 90%;
-            max-width: 800px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            position: relative;
+            margin-top: 50px;
         }
-        .logo {
-            position: relative;
-            top: 10px;
-            left: 10px;
-            margin-bottom: 30px;
-            width: 100px;
-            height: 100px;
-            border-radius: 40%;
-            border: 2px solid white;
+        .form-group label {
+            font-weight: bold;
         }
-        h2 {
-            margin-top: 20px;
-            text-align: center;
-            color: #00ff54;
-text-shadow: 2px 2px 5px black;
-text-transform: uppercase;
-            letter-spacing: 2px;
+        .table th, .table td {
+            vertical-align: middle;
         }
-        form {
+        .btn-success {
             margin-bottom: 20px;
         }
-        form div {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
+        .btn-primary {
+            background-color: #1e90ff;
+            border-color: #1e90ff;
         }
-        form label {
-            margin-bottom: 5px;
-            color: #00ff54;
-            text-shadow: 2px 2px 5px black;
-
+        .btn-primary:hover {
+            background-color: #1c86ee;
+            border-color: #1c86ee;
         }
-        form input, form select {
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            box-shadow: 5px 10px black;
-            font-size: 16px;
-            outline: none;
-            flex: 1;
+        .btn-danger {
+            background-color: #ff4d4d;
+            border-color: #ff4d4d;
         }
-        form button {
-            padding: 10px;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            box-shadow: 5px 10px black;
+        .btn-danger:hover {
+            background-color: #ff1a1a;
+            border-color: #ff1a1a;
+        }
+        h2, h4 {
             color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            transition: background 0.3s ease-in-out;
+        }
+        .form-control, .form-select {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #444;
+            color: #fff;
+            border-color: #777;
+        }
+        .logo-preview {
+            max-width: 200px;
+            max-height: 100px;
+            margin-bottom: 10px;
+        }
+        .table {
+            background-color: #333;
+            color: #fff;
             width: 100%;
         }
-        form button:hover {
-            background: linear-gradient(45deg, green, #00c6ff);
+        .table thead th {
+            background-color: #444;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            color: #fff;
+        .table tfoot th {
+            background-color: #444;
         }
-        th, td {
-            border: 1px solid #00ffff;
-            padding: 8px;
-            text-align: center;
+        .table tbody tr:hover {
+            background-color: #555;
         }
-        th {
-            background: rgba(67, 255, 76, 0.2);
-        }
-        tbody tr:nth-child(even) {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .button-container button {
-            padding: 10px 20px;
-            margin: 5px;
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s ease-in-out;
-        }
-        .button-container button:hover {
-            background: linear-gradient(45deg, #0072ff, #00c6ff);
+        @media (max-width: 768px) {
+            .form-group {
+                margin-bottom: 15px;
+            }
+            .form-control, .form-select {
+                font-size: 14px;
+            }
+            h2 {
+                font-size: 24px;
+            }
+            h4 {
+                font-size: 18px;
+            }
+            .btn {
+                font-size: 14px;
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="1.png" alt="Logo" class="logo"> <!-- Add your logo here -->
-        <h2>Daftar Barang</h2>
 
-        <form id="dataForm">
-            <div>
-                <label for="nama_barang">Nama Barang:</label>
-                <input type="text" id="nama_barang" name="nama_barang" required>
+<div class="container">
+    <h2 class="text-center">Form Input Data Invoice</h2>
+
+    <div class="container">
+        <form id="invoiceForm" class="border p-4 bg-dark shadow-sm rounded">
+            <h4>Detail Toko</h4>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="namaToko">Nama Toko</label>
+                    <input type="text" class="form-control" id="namaToko" name="namaToko" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="tanggalInvoice">Tanggal Terbit Invoice</label>
+                    <input type="date" class="form-control" id="tanggalInvoice" name="tanggalInvoice" required>
+                </div>
             </div>
-            <div>
-                <label for="satuan">Satuan:</label>
-                <select id="satuan" name="satuan" required>
-                    <option value="KG">KG</option>
-                    <option value="Ons">Ons</option>
-                    <option value="Bal">Bal</option>
-                    <option value="Ikat">Ikat</option>
-                    <option value="Besek">Besek</option>
-                    <option value="Blok">Blok</option>
-                    <option value="Liter">Liter</option>
-                    <option value="Pax">Pax</option>
-                    <option value="Pcs">Pcs</option>
-                </select>
+            <h4>Input Barang</h4>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="namaBarang">Nama Barang</label>
+                    <input type="text" class="form-control" id="namaBarang" name="namaBarang" required>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="banyaknya">Banyaknya</label>
+                    <input type="number" class="form-control" id="banyaknya" name="banyaknya" required>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="satuan">Satuan</label>
+                    <select id="satuan" class="form-control form-select" name="satuan" required>
+                        <option value="" disabled selected>Pilih satuan...</option>
+                        <option value="KG">KG</option>
+                        <option value="Ons">Ons</option>
+                        <option value="Bal">Bal</option>
+                        <option value="Ikat">Ikat</option>
+                        <option value="Besek">Besek</option>
+                        <option value="Blok">Blok</option>
+                        <option value="Liter">Liter</option>
+                        <option value="Pax">Pax</option>
+                        <option value="Pcs">Pcs</option>
+                    </select>
+                </div>
             </div>
-            <div>
-                <label for="harga">Harga:</label>
-                <input type="text" id="harga" name="harga" required oninput="formatHarga(this)">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="harga">Harga per Satuan</label>
+                    <input type="number" class="form-control" id="harga" name="harga" required>
+                </div>
             </div>
-            <button type="button" onclick="addRow()">Add to Table</button>
+            <button type="button" class="btn btn-primary btn-block" onclick="addItem()">Tambah Barang</button>
+            <button type="button" class="btn btn-danger btn-block mt-2" onclick="clearAll()">Hapus Semua Data</button>
         </form>
 
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nama Barang</th>
-                    <th>Satuan</th>
-                    <th>Harga</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows will be added here by JavaScript -->
-            </tbody>
-        </table>
-
-        <div class="button-container">
-            <button onclick="downloadCSV()">Download CSV</button>
-            <button onclick="downloadHTML()">Download HTML</button>
-            <button onclick="downloadPDF()">Download PDF</button>
-            <button onclick="clearLocalStorage()">Clear Data</button>
+        <h2 id="kopDaftarBarang" class="text-center mt-5">Daftar Barang</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th>Banyaknya</th>
+                        <th>Satuan</th>
+                        <th>Harga per Satuan</th>
+                        <th>Jumlah Harga</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceTableBody">
+                    <!-- Items will be added here -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="5" class="text-right">Sub Total</th>
+                        <th id="subTotal">Rp. 0</th>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
+        <button type="button" class="btn btn-success btn-block mt-2" onclick="generatePDF()">Generate PDF</button>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-    <script>
-        let idCounter = 1;
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        function addRow() {
-            const form = document.getElementById('dataForm');
-            if (!form.checkValidity()) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Please fill all fields.'
-                });
-                return;
-            }
+<script>
+    function formatCurrency(value) {
+        return 'Rp. ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
 
-            const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-            const row = table.insertRow();
+    function addItem() {
+        const namaBarang = document.getElementById('namaBarang').value;
+        const banyaknya = document.getElementById('banyaknya').value;
+        const satuan = document.getElementById('satuan').value;
+        const harga = document.getElementById('harga').value;
 
-            const nama_barang = document.getElementById('nama_barang').value;
-            const satuan = document.getElementById('satuan').value;
-            const harga = document.getElementById('harga').value.replace(/,/g, '');
+        if (namaBarang && banyaknya && satuan && harga) {
+            const jumlahHarga = banyaknya * harga;
+            const formattedHarga = formatCurrency(harga);
+            const formattedJumlahHarga = formatCurrency(jumlahHarga);
+            const tableBody = document.getElementById('invoiceTableBody');
+            const newRow = document.createElement('tr');
 
-            row.insertCell(0).innerHTML = idCounter++;
-            row.insertCell(1).innerHTML = nama_barang;
-            row.insertCell(2).innerHTML = satuan;
-            row.insertCell(3).innerHTML = 'Rp. ' + formatCurrency(harga);
+            newRow.innerHTML = `
+                <td>${namaBarang}</td>
+                <td>${banyaknya}</td>
+                <td>${satuan}</td>
+                <td>${formattedHarga}</td>
+                <td>${formattedJumlahHarga}</td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)"><i class="fas fa-trash-alt"></i></button></td>
+            `;
 
-            saveToLocalStorage(nama_barang, satuan, harga);
+            tableBody.appendChild(newRow);
 
-            form.reset();
+            updateSubTotal();
+            saveToLocalStorage();
+
+            document.getElementById('invoiceForm').reset();
+            Swal.fire('Success', 'Barang berhasil ditambahkan!', 'success');
+        } else {
+            Swal.fire('Error', 'Silakan isi semua field yang diperlukan!', 'error');
         }
+    }
 
-        function formatCurrency(value) {
-            return parseFloat(value).toLocaleString('en', {minimumFractionDigits: 0});
+    function removeItem(button) {
+        const row = button.closest('tr');
+        row.remove();
+        updateSubTotal();
+        saveToLocalStorage();
+    }
+
+    function clearAll() {
+        const tableBody = document.getElementById('invoiceTableBody');
+        tableBody.innerHTML = '';
+        updateSubTotal();
+        localStorage.removeItem('invoiceItems');
+        Swal.fire('Success', 'Semua data telah dihapus!', 'success');
+    }
+
+    function updateSubTotal() {
+        const tableBody = document.getElementById('invoiceTableBody');
+        let subTotal = 0;
+        for (let row of tableBody.rows) {
+            const jumlahHarga = parseInt(row.cells[4].textContent.replace('Rp. ', '').replace(/\./g, ''), 10);
+            subTotal += jumlahHarga;
         }
+        document.getElementById('subTotal').textContent = formatCurrency(subTotal);
+    }
 
-        function formatHarga(input) {
-            const value = input.value.replace(/[^0-9]/g, '');
-            input.value = formatCurrency(value);
-        }
-
-        function saveToLocalStorage(nama_barang, satuan, harga) {
-            let data = JSON.parse(localStorage.getItem('dataGudang')) || [];
-            data.push({
-                id: idCounter - 1,
-                nama_barang: nama_barang,
-                satuan: satuan,
-                harga: 'Rp. ' + formatCurrency(harga)
-            });
-            localStorage.setItem('dataGudang', JSON.stringify(data));
-        }
-
-        function loadFromLocalStorage() {
-            const storedData = JSON.parse(localStorage.getItem('dataGudang')) || [];
-            const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-            storedData.forEach(item => {
-                const row = table.insertRow();
-                row.insertCell(0).innerHTML = item.id;
-                row.insertCell(1).innerHTML = item.nama_barang;
-                row.insertCell(2).innerHTML = item.satuan;
-                row.insertCell(3).innerHTML = item.harga;
-            });
-            idCounter = storedData.length > 0 ? storedData[storedData.length - 1].id + 1 : 1;
-        }
-
-        function downloadCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "ID,Nama Barang,Satuan,Harga\n";
-
-            const rows = document.querySelectorAll("#dataTable tbody tr");
-            rows.forEach(row => {
-                const cols = row.querySelectorAll("td");
-const rowContent = Array.from(cols).map(col => col.innerText.replace(/,/g, '')).join(",");
-                csvContent += rowContent + "\n";
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "data_gudang.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function downloadHTML() {
-            const table = document.getElementById('dataTable').outerHTML;
-            const blob = new Blob([table], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'data_gudang.html';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const logo = new Image();
-            logo.src = '1.png'; // Replace with the path to your logo
-
-            logo.onload = function() {
-                const pageWidth = doc.internal.pageSize.width;
-                const logoSize = 30; // Logo size
-                const topMargin = 20; // Margin from the top of the page
-                const addressWidth = 80; // Width for the address details area
-                const addressMarginRight = 10; // Margin from the right edge of the page
-
-                doc.addImage(logo, 'PNG', topMargin, topMargin, logoSize, logoSize);
-
-                doc.setFontSize(12);
-                const addressXPosition = pageWidth - addressWidth - addressMarginRight;
-                doc.text('MEMET VEGETABLES', addressXPosition, topMargin);
-                doc.text('JL. GADANG GG.4, MALANG, JAWA TIMUR', addressXPosition, topMargin + 10);
-                doc.text('Phone: 0812-5259-0580', addressXPosition, topMargin + 20);
-
-                doc.setFontSize(16);
-                const textWidth = doc.getTextWidth('Daftar Barang');
-                const textXPosition = (pageWidth - textWidth) / 2;
-                const textYPosition = topMargin + logoSize + 30;
-                doc.text('Daftar Barang', textXPosition, textYPosition);
-
-                const margin = 20;
-                const tableWidth = pageWidth - 2 * margin;
-
-                doc.autoTable({
-                    html: '#dataTable',
-                    startY: textYPosition + 10,
-                    margin: { left: margin, right: margin },
-                    tableWidth: tableWidth,
-                    styles: {
-                        overflow: 'linebreak',
-                        lineColor: [0, 0, 0],
-                        lineWidth: 0.75
-                    },
-                    headStyles: {
-                        fillColor: [67, 255, 80],
-                        textColor: [0, 0, 0],
-                        lineColor: [0, 0, 0],
-                        lineWidth: 0.75,
-                        halign: 'center'
-                    },
-                    bodyStyles: {
-                        fillColor: [255, 255, 255],
-                        lineColor: [0, 0, 0],
-                        lineWidth: 0.75
-                    },
-                    alternateRowStyles: {
-                        fillColor: [245, 245, 245]
-                    },
-                    theme: 'striped',
-                    head: [
-                        ['ID', 'Nama Barang', 'Satuan', 'Harga']
-                    ],
-                    columnStyles: {
-                        0: { cellWidth: tableWidth * 0.1, halign: 'center' },
-                        1: { cellWidth: tableWidth * 0.4, halign: 'center' },
-                        2: { cellWidth: tableWidth * 0.2, halign: 'center' },
-                        3: { cellWidth: tableWidth * 0.3, halign: 'center' }
-                    }
-                });
-
-                doc.save('Memet_Vegetables.pdf');
+    function saveToLocalStorage() {
+        const tableBody = document.getElementById('invoiceTableBody');
+        const items = Array.from(tableBody.rows).map(row => {
+            return {
+                namaBarang: row.cells[0].textContent,
+                banyaknya: row.cells[1].textContent,
+                satuan: row.cells[2].textContent,
+                harga: row.cells[3].textContent.replace('Rp. ', '').replace(/\./g, ''),
+                jumlahHarga: row.cells[4].textContent.replace('Rp. ', '').replace(/\./g, '')
             };
+        });
+        localStorage.setItem('invoiceItems', JSON.stringify(items));
+        localStorage.setItem('namaToko', document.getElementById('namaToko').value);
+        localStorage.setItem('tanggalInvoice', document.getElementById('tanggalInvoice').value);
+    }
 
-            logo.onerror = function() {
-                console.error('Logo image failed to load.');
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Logo image failed to load. Please check the path.'
-                });
-            };
-        }
+    function loadFromLocalStorage() {
+        const items = JSON.parse(localStorage.getItem('invoiceItems')) || [];
+        const tableBody = document.getElementById('invoiceTableBody');
+        const namaToko = localStorage.getItem('namaToko') || '';
+        const tanggalInvoice = localStorage.getItem('tanggalInvoice') || '';
+        document.getElementById('namaToko').value = namaToko;
+        document.getElementById('tanggalInvoice').value = tanggalInvoice;
+        
+        items.forEach(item => {
+            const formattedHarga = formatCurrency(item.harga);
+            const formattedJumlahHarga = formatCurrency(item.jumlahHarga);
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${item.namaBarang}</td>
+                <td>${item.banyaknya}</td>
+                <td>${item.satuan}</td>
+                <td>${formattedHarga}</td>
+                <td>${formattedJumlahHarga}</td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)"><i class="fas fa-trash-alt"></i></button></td>
+            `;
+            tableBody.appendChild(newRow);
+        });
+        updateSubTotal();
+    }
 
-        function clearLocalStorage() {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, clear it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('dataGudang');
-                    location.reload();
-                }
-            });
-        }
+    function generatePDF() {
+    const items = JSON.parse(localStorage.getItem('invoiceItems'));
+    const namaToko = localStorage.getItem('namaToko');
+    const tanggalInvoice = localStorage.getItem('tanggalInvoice');
+    const logoUrl = '1.png'; // Ganti dengan URL atau path logo Anda
+    
+    const invoiceWindow = window.open('', '_blank');
+    invoiceWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Invoice</title>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+            <style>
+    body {
+        background-color: #f8f9fa;
+        margin: 20px;
+    }
+    .container {
+        margin-top: 50px;
+    }
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    h2, h4 {
+        color: #343a40;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .logo {
+        max-width: 150px;
+        max-height: 80px;
+        margin-bottom: 10px;
+    }
+    .address {
+        text-align: left;
+        font-size: 14px;
+    }
+    .name-date {
+        text-align: right;
+        font-size: 16px;
+    }
+    .text-center1 {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    .table thead th {
+        background-color: #28a745; /* Warna hijau */
+        color: #fff;
+    }
+</style>
 
-        window.onload = loadFromLocalStorage;
-    </script>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div>
+                        <img src="${logoUrl}" alt="Logo Usaha" class="logo">
+                        <div class="address">
+                            <p margin-top: 10px; , margin-bottom: 10px;><b>MEMET VEGETABLES</b></p>
+                            JL. Gadang GG.4 , Gadang , Sukun
+                            <p>Malang , Jawa Timur , 65149</p>
+                        </div>
+                    </div>
+                    <div class="name-date">
+                        <h4>Nama Toko: ${namaToko}</h4>
+                        <h4>Tanggal: ${tanggalInvoice}</h4>
+                    </div>
+                </div>
+                <h4 class="text-center1">Nomor Invoice : #${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}</h4>
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nama Barang</th>
+                            <th>Banyaknya</th>
+                            <th>Satuan</th>
+                            <th>Harga per Satuan</th>
+                            <th>Jumlah Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `);
+
+    let subTotal = 0;
+    items.forEach(item => {
+        const jumlahHarga = parseInt(item.jumlahHarga, 10);
+        subTotal += jumlahHarga;
+        invoiceWindow.document.write(`
+            <tr>
+                <td>${item.namaBarang}</td>
+                <td>${item.banyaknya}</td>
+                <td>${item.satuan}</td>
+                <td>${formatCurrency(item.harga)}</td>
+                <td>${formatCurrency(item.jumlahHarga)}</td>
+            </tr>
+        `);
+    });
+
+    invoiceWindow.document.write(`
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="4" class="text-right">Sub Total</th>
+                            <th>${formatCurrency(subTotal)}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </body>
+        </html>
+    `);
+    invoiceWindow.document.close();
+    invoiceWindow.print();
+  
+}
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadFromLocalStorage();
+    });
+</script>
+
 </body>
 </html>
