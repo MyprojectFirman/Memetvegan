@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table with Input</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        .form-group input[type="text"], .form-group input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group input[type="text"]::placeholder {
+            color: #aaa;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: lightyellow;
+            color: #333;
+            text-align: center;
+        }
+        table th[colspan] {
+            text-align: center;
+        }
+        .libur {
+            text-align: center;
+            background-color: lightcoral;
+            color: white;
+        }
+        .subtotal {
+            font-weight: bold;
+            background-color: lightyellow;
+        }
+        .total {
+            font-weight: bold;
+            background-color: #d4edda;
+        }
+        .clear-all-button {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .clear-all-button:hover {
+            background-color: #5a6268;
+        }
+        #logoDisplay {
+            width: 100px;
+            height: 100px;
+            display: none;
+            margin-right: 20px;
+        }
+        #headerInfo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #headerInfo div {
+            font-size: 14px;
+        }
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 12px;
+            }
+            #logoDisplay {
+                width: 80px;
+                height: 80px;
+            }
+        }
+        @media (max-width: 480px) {
+            table, th, td {
+                font-size: 10px;
+                padding: 5px;
+            }
+            #logoDisplay {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <form id="dataForm">
+        <div class="form-group">
+            <label for="logo">Upload Logo:</label>
+            <input type="file" id="logo" name="logo" accept="image/*" onchange="displayLogo(event)">
+            <img id="logoDisplay" src="" alt="Logo">
+        </div>
+        <div class="form-group">
+            <label for="date">Tanggal:</label>
+            <input type="date" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+            <label for="sayur">Sayur & sembako:</label>
+            <input type="text" id="sayur" name="sayur" required placeholder="Masukkan jumlah" oninput="formatNumber(this)">
+        </div>
+        <div class="form-group">
+            <label for="buah">Sayur buah:</label>
+            <input type="text" id="buah" name="buah" required placeholder="Masukkan jumlah" oninput="formatNumber(this)">
+        </div>
+        <div class="form-group">
+            <label for="susu">Susu sapi:</label>
+            <input type="text" id="susu" name="susu" required placeholder="Masukkan jumlah" oninput="formatNumber(this)">
+        </div>
+        <button type="submit">Tambah Data</button>
+    </form>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th rowspan="2">Tanggal</th>
+                <th colspan="1">PapperSkul</th>
+                <th colspan="2">Om BOB</th>
+            </tr>
+            <tr>
+                <th>Sayur & sembako</th>
+                <th>Sayur buah</th>
+                <th>Susu sapi</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="dataTableBody">
+            <!-- Data rows will be added here -->
+        </tbody>
+        <tfoot>
+            <tr class="total">
+                <td>Total</td>
+                <td id="totalSayur">Rp. 0</td>
+                <td id="totalBuah">Rp. 0</td>
+                <td id="totalSusu">Rp. 0</td>
+            </tr>
+            <tr class="subtotal">
+                <td colspan="2">Sub Total</td>
+                <td colspan="2" id="subTotal">Rp. 0</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <button class="clear-all-button" onclick="hapusSemuaData()">Hapus Data Semua</button>
+    <button class="clear-all-button" onclick="generateHTML()">Generate HTML</button>
+
+    <script>
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var date = document.getElementById('date').value;
+            var sayur = parseFloat(document.getElementById('sayur').value.replace(/\./g, '')) || 0;
+            var buah = parseFloat(document.getElementById('buah').value.replace(/\./g, '')) || 0;
+            var susu = parseFloat(document.getElementById('susu').value.replace(/\./g, '')) || 0;
+
+            var newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${date}</td>
+                <td class="${sayur === 0 || isNaN(sayur) ? 'libur' : ''}">${sayur === 0 || isNaN(sayur) ? 'LIBUR' : 'Rp. ' + formatCurrency(sayur)}</td>
+                <td class="${buah === 0 || isNaN(buah) ? 'libur' : ''}">${buah === 0 || isNaN(buah) ? 'LIBUR' : 'Rp. ' + formatCurrency(buah)}</td>
+                <td class="${susu === 0 || isNaN(susu) ? 'libur' : ''}">${susu === 0 || isNaN(susu) ? 'LIBUR' : 'Rp. ' + formatCurrency(susu)}</td>
+                <td><button class="edit-btn">Edit</button></td>
+            `;
+
+            document.getElementById('dataTableBody').appendChild(newRow);
+            updateTotals();
+            document.getElementById('dataForm').reset();
+        });
+
+        document.getElementById('dataTableBody').addEventListener('click', function(event) {
+            if (event.target && event.target.classList.contains('edit-btn')) {
+                var row = event.target.closest('tr');
+                editRow(row);
+            } else if (event.target && event.target.classList.contains('save-btn')) {
+                var row = event.target.closest('tr');
+                saveRow(row);
+            }
+        });
+
+        function editRow(row) {
+            var cells = row.getElementsByTagName('td');
+            var date = cells[0].textContent;
+            var sayur = cells[1].textContent.replace(/[^0-9]/g, '');
+            var buah = cells[2].textContent.replace(/[^0-9]/g, '');
+            var susu = cells[3].textContent.replace(/[^0-9]/g, '');
+
+            cells[0].innerHTML = `<input type="date" value="${date}">`;
+            cells[1].innerHTML = `<input type="text" value="${sayur}" oninput="formatNumber(this)">`;
+            cells[2].innerHTML = `<input type="text" value="${buah}" oninput="formatNumber(this)">`;
+            cells[3].innerHTML = `<input type="text" value="${susu}" oninput="formatNumber(this)">`;
+            cells[4].innerHTML = '<button class="save-btn">Save</button>';
+        }
+
+        function saveRow(row) {
+            var cells = row.getElementsByTagName('td');
+            var date = cells[0].querySelector('input').value;
+            var sayur = parseFloat(cells[1].querySelector('input').value.replace(/\./g, '')) || 0;
+            var buah = parseFloat(cells[2].querySelector('input').value.replace(/\./g, '')) || 0;
+            var susu = parseFloat(cells[3].querySelector('input').value.replace(/\./g, '')) || 0;
+
+            cells[0].textContent = date;
+            cells[1].textContent = sayur === 0 ? 'LIBUR' : 'Rp. ' + formatCurrency(sayur);
+            cells[2].textContent = buah === 0 ? 'LIBUR' : 'Rp. ' + formatCurrency(buah);
+            cells[3].textContent = susu === 0 ? 'LIBUR' : 'Rp. ' + formatCurrency(susu);
+            cells[4].innerHTML = '<button class="edit-btn">Edit</button>';
+
+            updateTotals();
+        }
+
+        function updateTotals() {
+            var rows = document.querySelectorAll('#dataTableBody tr');
+            var totalSayur = 0, totalBuah = 0, totalSusu = 0;
+
+            rows.forEach(row => {
+                var cells = row.getElementsByTagName('td');
+                let sayur = parseFloat(cells[1].textContent.replace(/[^\d]/g, '')) || 0;
+                let buah = parseFloat(cells[2].textContent.replace(/[^\d]/g, '')) || 0;
+                let susu = parseFloat(cells[3].textContent.replace(/[^\d]/g, '')) || 0;
+                
+                totalSayur += cells[1].textContent !== 'LIBUR' ? sayur : 0;
+                totalBuah += cells[2].textContent !== 'LIBUR' ? buah : 0;
+                totalSusu += cells[3].textContent !== 'LIBUR' ? susu : 0;
+            });
+
+            document.getElementById('totalSayur').textContent = 'Rp. ' + formatCurrency(totalSayur);
+            document.getElementById('totalBuah').textContent = 'Rp. ' + formatCurrency(totalBuah);
+            document.getElementById('totalSusu').textContent = 'Rp. ' + formatCurrency(totalSusu);
+
+            var subTotal = totalSayur + totalBuah + totalSusu;
+            document.getElementById('subTotal').textContent = 'Rp. ' + formatCurrency(subTotal);
+
+            saveDataToLocalStorage();
+        }
+
+        function formatNumber(input) {
+            let value = input.value.replace(/[^0-9]/g, '');
+            input.value = value;
+        }
+
+        function formatCurrency(amount) {
+            return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function saveDataToLocalStorage() {
+            const rows = Array.from(document.querySelectorAll('#dataTableBody tr'));
+            const data = rows.map(row => {
+                const cells = row.getElementsByTagName('td');
+                return {
+                    date: cells[0].textContent,
+                    sayur: cells[1].textContent.replace(/[^\d]/g, ''),
+                    buah: cells[2].textContent.replace(/[^\d]/g, ''),
+                    susu: cells[3].textContent.replace(/[^\d]/g, '')
+                };
+            });
+            localStorage.setItem('tableData', JSON.stringify(data));
+        }
+
+        function hapusSemuaData() {
+            document.getElementById('dataTableBody').innerHTML = '';
+            updateTotals();
+            localStorage.removeItem('tableData');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const data = JSON.parse(localStorage.getItem('tableData')) || [];
+            data.forEach(item => {
+                var newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${item.date}</td>
+                    <td class="${item.sayur === '0' || isNaN(parseFloat(item.sayur)) ? 'libur' : ''}">${item.sayur === '0' || isNaN(parseFloat(item.sayur)) ? 'LIBUR' : 'Rp. ' + formatCurrency(parseFloat(item.sayur))}</td>
+                    <td class="${item.buah === '0' || isNaN(parseFloat(item.buah)) ? 'libur' : ''}">${item.buah === '0' || isNaN(parseFloat(item.buah)) ? 'LIBUR' : 'Rp. ' + formatCurrency(parseFloat(item.buah))}</td>
+                    <td class="${item.susu === '0' || isNaN(parseFloat(item.susu)) ? 'libur' : ''}">${item.susu === '0' || isNaN(parseFloat(item.susu)) ? 'LIBUR' : 'Rp. ' + formatCurrency(parseFloat(item.susu))}</td>
+                    <td><button class="edit-btn">Edit</button></td>
+                `;
+                document.getElementById('dataTableBody').appendChild(newRow);
+            });
+            updateTotals();
+        });
+
+        function displayLogo(event) {
+            const logoDisplay = document.getElementById('logoDisplay');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                logoDisplay.src = e.target.result;
+                logoDisplay.style.display = 'block';
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function generateHTML() {
+            const logo = document.getElementById('logoDisplay').src || '';
+            const date = new Date().toLocaleDateString();
+            const tableHtml = document.getElementById('dataTable').outerHTML;
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Generated Report</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 0;
+                            padding: 20px;
+                        }
+                        #header {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 20px;
+                        }
+                        h1 {
+                          font-size: 12px;
+                          margin-left:20px;
+                        }
+                        #header img {
+                            width: 100px;
+                            height: 100px;
+                            margin-right: 20px;
+                        }
+                        #header .info {
+                            display: flex;
+                            flex-direction: column;
+                        }
+                        #header .info div {
+                            margin-bottom: 5px;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            background-color: #ffffff;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                        }
+                        table, th, td {
+                            border: 1px solid #ddd;
+                        }
+                        th, td {
+                            padding: 12px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: lightyellow;
+                            color: #333;
+                            text-align: center;
+                        }
+                        .libur {
+                            text-align: center;
+                            background-color: lightcoral;
+                            color: white;
+                        }
+                        .subtotal {
+                            font-weight: bold;
+                            background-color: lightyellow;
+                        }
+                        .total {
+                            font-weight: bold;
+                            background-color: #d4edda;
+                        }
+                        @media (max-width: 768px) {
+                            table, th, td {
+                                font-size: 12px;
+                            }
+                        }
+                        @media (max-width: 480px) {
+                            table, th, td {
+                                font-size: 10px;
+                                padding: 5px;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div id="header">
+                        ${logo ? `<img src="${logo}" alt="Logo">` : ''}
+                        <div class="info">
+                            <div style="font-size: 12px;"><strong></strong> Jl. Gadang GG.IVA , Gadang , Sukun , Malang</div>
+                            <div style="font-size: 12px; "><strong>Telepon:</strong> 0812-5259-0580</div>
+                        </div>
+                    </div>
+<h1>Rincian Tagihan - 12 Juli 2024 ~ 01 Agustus 2024</h1>
+                    ${tableHtml}
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'laporan.html';
+            link.click();
+        }
+    </script>
+</body>
+</html>
