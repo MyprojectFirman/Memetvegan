@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekapan</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+        .bg-paid {
+          background-color: lightgreen;
+        
+        }
+        .bg-unpaid { 
+        background-color: lightcoral;
+        }
+        }
+        .navbar-custom {
+            background-color: #007bff;
+        }
+        .navbar-custom .navbar-nav .nav-link {
+            color: #fff;
+        }
+        .navbar-custom .navbar-nav .nav-link:hover {
+            color: #e9ecef;
+        }
+        .container {
+            margin-top: 90px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .btn-success {
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #00408d;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        h2, h4 {
+            color: #007bff;
+        }
+        .form-control, .form-select {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #e9ecef;
+            color: #333;
+            border-color: #007bff;
+        }
+        .table {
+            background-color: #fff;
+            color: #333;
+            width: 100%;
+        }
+        .table thead th {
+            background-color: #28a745; /* Warna hijau cerah */
+            color: #fff;
+        }
+        .table tfoot th {
+            background-color: #28a745; /* Warna hijau cerah */
+            color: #fff;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .table .action-buttons .btn {
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .form-group {
+                margin-bottom: 15px;
+            }
+            .form-control, .form-select {
+                font-size: 14px;
+            }
+            h2 {
+                font-size: 24px;
+            }
+            h4 {
+                font-size: 18px;
+            }
+            .btn {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-custom navbar-dark fixed-top">
+    <a class="navbar-brand" href="#">Invoice App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="invoice.html">Invoice</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="rekapan.html">Rekapan</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <h2 class="text-center mt-5">Rekapan Invoice</h2>
+    <div class="form-group">
+        <label for="searchInput">Search:</label>
+        <input type="text" id="searchInput" class="form-control" placeholder="Enter keyword...">
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Nama Toko</th>
+                    <th>Tanggal Invoice</th>
+                    <th>Sub Total</th>
+                    <th>Status Pembayaran</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="rekapanTableBody">
+                <!-- Data will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Status Pembayaran</th>
+                    <th>Sub Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="rowPaid" class="bg-paid text-black">
+                    <td>Sudah Bayar</td>
+                    <td id="totalPaid" class="font-weight-bold">Rp. 0</td>
+                </tr>
+                <tr id="rowUnpaid" class="bg-unpaid text-black">
+                    <td>Belum Bayar</td>
+                    <td id="totalUnpaid" class="font-weight-bold">Rp. 0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function formatCurrency(value) {
+        return 'Rp. ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function loadRekapan() {
+    const rekapan = JSON.parse(localStorage.getItem('rekapan')) || [];
+    const tableBody = document.getElementById('rekapanTableBody');
+    const totalPaidElement = document.getElementById('totalPaid');
+    const totalUnpaidElement = document.getElementById('totalUnpaid');
+    const rowPaid = document.getElementById('rowPaid');
+    const rowUnpaid = document.getElementById('rowUnpaid');
+
+    let totalPaid = 0;
+    let totalUnpaid = 0;
+
+    tableBody.innerHTML = ''; // Clear existing data
+
+    rekapan.forEach((invoice, index) => {
+        const row = document.createElement('tr');
+        // Determine the background color based on the payment status
+        const backgroundColor = invoice.statusPembayaran === 'Sudah Bayar' ? '#d4edda' : '#f8d7da'; // Green for paid, Red for unpaid
+        row.style.backgroundColor = backgroundColor;
+
+        row.innerHTML = `
+            <td>${invoice.namaToko}</td>
+            <td>${invoice.tanggalInvoice}</td>
+            <td>${formatCurrency(invoice.subTotal)}</td>
+            <td>${invoice.statusPembayaran}</td>
+            <td class="action-buttons">
+                <button class="btn btn-info btn-sm" onclick="showDetails(${index})">Detail</button>
+                <button class="btn btn-warning btn-sm" onclick="editRekapan(${index})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteRekapan(${index})">Hapus</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+
+        // Update totals based on the payment status
+        if (invoice.statusPembayaran === 'Sudah Bayar') {
+            totalPaid += parseFloat(invoice.subTotal);
+        } else {
+            totalUnpaid += parseFloat(invoice.subTotal);
+        }
+    });
+
+    // Update subtotal display
+    totalPaidElement.textContent = formatCurrency(totalPaid);
+    totalUnpaidElement.textContent = formatCurrency(totalUnpaid);
+}
+
+    function showDetails(index) {
+    const rekapan = JSON.parse(localStorage.getItem('rekapan')) || [];
+    const invoice = rekapan[index];
+
+    let itemsList = '';
+    invoice.items.forEach(item => {
+        itemsList += `
+            <tr>
+                <td>${item.namaBarang}</td>
+                <td>${item.banyaknya}</td>
+                <td>${item.satuan}</td>
+                <td>${formatCurrency(item.harga)}</td>
+                <td>${formatCurrency(item.jumlahHarga)}</td>
+            </tr>
+        `;
+    });
+
+    Swal.fire({
+        title: `Invoice Details - ${invoice.namaToko}`,
+        html: `
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th>Banyaknya</th>
+                        <th>Satuan</th>
+                        <th>Harga per Satuan</th>
+                        <th>Jumlah Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itemsList}
+                </tbody>
+            </table>
+            <p><b>Sub Total:</b> ${formatCurrency(invoice.subTotal)}</p>
+            <p>
+                <b>Status Pembayaran:</b> 
+                <select id="statusPembayaran" class="form-control" style="width: 200px;">
+                    <option value="Belum Bayar" ${invoice.statusPembayaran === 'Belum Bayar' ? 'selected' : ''}>Belum Bayar</option>
+                    <option value="Sudah Bayar" ${invoice.statusPembayaran === 'Sudah Bayar' ? 'selected' : ''}>Sudah Bayar</option>
+                </select>
+            </p>
+        `,
+        width: '80%',
+        confirmButtonText: 'Save Changes',
+        confirmButtonColor: '#007bff',
+        preConfirm: () => {
+            const newStatus = Swal.getPopup().querySelector('#statusPembayaran').value;
+            if (!newStatus) {
+                Swal.showValidationMessage('Please select a payment status');
+            }
+            return newStatus;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const newStatus = result.value;
+            const rekapan = JSON.parse(localStorage.getItem('rekapan')) || [];
+            rekapan[index].statusPembayaran = newStatus;
+            localStorage.setItem('rekapan', JSON.stringify(rekapan));
+            loadRekapan(); // Reload to reflect changes
+        }
+    });
+}
+
+    function filterTable() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#rekapanTableBody tr');
+
+        rows.forEach(row => {
+            const cells = row.getElementsByTagName('td');
+            let match = false;
+            for (let i = 0; i < cells.length - 1; i++) { // Exclude last cell (action column)
+                if (cells[i].textContent.toLowerCase().includes(input)) {
+                    match = true;
+                    break;
+                }
+            }
+            row.style.display = match ? '' : 'none';
+        });
+    }
+
+    function editRekapan(index) {
+        const rekapan = JSON.parse(localStorage.getItem('rekapan')) || [];
+        const invoice = rekapan[index];
+
+        Swal.fire({
+            title: 'Edit Invoice',
+            html: `
+                <input id="editNamaToko" class="swal2-input" value="${invoice.namaToko}" placeholder="Nama Toko">
+<input id="editTanggalInvoice" class="swal2-input" type="date" value="${invoice.tanggalInvoice}" placeholder="Tanggal Invoice">
+                <input id="editSubTotal" class="swal2-input" type="number" value="${invoice.subTotal}" placeholder="Sub Total">
+                <select id="editStatusPembayaran" class="swal2-input">
+                    <option value="Belum Bayar" ${invoice.statusPembayaran === 'Belum Bayar' ? 'selected' : ''}>Belum Bayar</option>
+                    <option value="Sudah Bayar" ${invoice.statusPembayaran === 'Sudah Bayar' ? 'selected' : ''}>Sudah Bayar</option>
+                </select>
+            `,
+            confirmButtonText: 'Save Changes',
+            confirmButtonColor: '#007bff',
+            preConfirm: () => {
+                const namaToko = Swal.getPopup().querySelector('#editNamaToko').value;
+                const tanggalInvoice = Swal.getPopup().querySelector('#editTanggalInvoice').value;
+                const subTotal = Swal.getPopup().querySelector('#editSubTotal').value;
+                const statusPembayaran = Swal.getPopup().querySelector('#editStatusPembayaran').value;
+
+                if (!namaToko || !tanggalInvoice || !subTotal || !statusPembayaran) {
+                    Swal.showValidationMessage('Please fill in all fields');
+                }
+                return { namaToko, tanggalInvoice, subTotal, statusPembayaran };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { namaToko, tanggalInvoice, subTotal, statusPembayaran } = result.value;
+                rekapan[index] = { ...rekapan[index], namaToko, tanggalInvoice, subTotal, statusPembayaran };
+                localStorage.setItem('rekapan', JSON.stringify(rekapan));
+                loadRekapan(); // Reload to reflect changes
+            }
+        });
+    }
+
+    function deleteRekapan(index) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const rekapan = JSON.parse(localStorage.getItem('rekapan')) || [];
+                rekapan.splice(index, 1);
+                localStorage.setItem('rekapan', JSON.stringify(rekapan));
+                loadRekapan(); // Reload to remove deleted item
+                Swal.fire(
+                    'Deleted!',
+                    'The invoice has been deleted.',
+                    'success'
+                );
+            }
+        });
+    }
+
+    document.getElementById('searchInput').addEventListener('input', filterTable);
+
+    document.addEventListener('DOMContentLoaded', loadRekapan);
+</script>
+
+</body>
+</html>
