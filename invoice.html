@@ -341,125 +341,136 @@
     }
 
     function generatePDF(namaToko, tanggalInvoice) {
-        const items = JSON.parse(localStorage.getItem('invoiceItems'));
-        const logoUrl = '1.png'; // Ganti dengan URL atau path logo Anda
+    const items = JSON.parse(localStorage.getItem('invoiceItems'));
+    const logoUrl = '1.png'; // Ganti dengan URL atau path logo Anda
 
-        const invoiceWindow = window.open('', '_blank');
-        invoiceWindow.document.write(`
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Invoice</title>
-                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-                <style>
-                    body {
-                        background-color: #f8f9fa;
-                        margin: 20px;
-                    }
-                    .container {
-                        margin-top: 50px;
-                    }
-                    .table th, .table td {
-                        vertical-align: middle;
-                    }
-                    h2, h4 {
-                        color: #28a745; /* Warna hijau */
-                    }
-                    .header {
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        margin-bottom: 20px;
-                    }
-                    .logo {
-                        max-width: 150px;
-                        max-height: 80px;
-                        margin-bottom: 10px;
-                    }
-                    .address {
-                        text-align: left;
-                        font-size: 14px;
-                    }
-                    .name-date {
-                        text-align: right;
-                        font-size: 16px;
-                    }
-                    .text-center1 {
-                        margin-bottom: 30px;
-                        text-align: center;
-                    }
-                    .table tbody tr:hover {
-                        background-color: #e9ecef;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <div>
-                            <img src="${logoUrl}" alt="Logo Usaha" class="logo">
-                            <div class="address">
-                                <p><b>MEMET VEGETABLES</b></p>
-                                JL. Gadang GG.4 , Gadang , Sukun
-                                <p>Malang , Jawa Timur , 65149</p>
-                            </div>
-                        </div>
-                        <div class="name-date">
-                            <h4>Nama Toko: ${namaToko}</h4>
-                            <h4>Tanggal: ${tanggalInvoice}</h4>
+    const invoiceWindow = window.open('', '_blank');
+    invoiceWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Invoice</title>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+            <style>
+                body {
+                    background-color: #f8f9fa;
+                    margin: 20px;
+                }
+                .container {
+                    margin-top: 50px;
+                }
+                .table th, .table td {
+                    vertical-align: middle;
+                }
+                h2, h4 {
+                    color: #28a745; /* Warna hijau */
+                }
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .logo {
+                    max-width: 150px;
+                    max-height: 80px;
+                    margin-bottom: 10px;
+                }
+                .address {
+                    text-align: left;
+                    font-size: 14px;
+                }
+                .name-date {
+                    text-align: right;
+                    font-size: 16px;
+                }
+                .text-center1 {
+                    margin-bottom: 30px;
+                    text-align: center;
+                }
+                .table tbody tr:hover {
+                    background-color: #e9ecef;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div>
+                        <img src="${logoUrl}" alt="Logo Usaha" class="logo">
+                        <div class="address">
+                            <p><b>MEMET VEGETABLES</b></p>
+                            JL. Gadang GG.4 , Gadang , Sukun
+                            <p>Malang , Jawa Timur , 65149</p>
                         </div>
                     </div>
-                    <h4 class="text-center1">Nomor Invoice : #${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}</h4>
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Nama Barang</th>
-                                <th>Banyaknya</th>
-                                <th>Satuan</th>
-                                <th>Harga per Satuan</th>
-                                <th>Jumlah Harga</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-        `);
-
-        let subTotal = 0;
-        items.forEach(item => {
-            const jumlahHarga = parseInt(item.jumlahHarga, 10);
-            subTotal += jumlahHarga;
-            invoiceWindow.document.write(`
-                <tr>
-                    <td>${item.namaBarang}</td>
-                    <td>${item.banyaknya}</td>
-                    <td>${item.satuan}</td>
-                    <td>${formatCurrency(item.harga)}</td>
-                    <td>${formatCurrency(item.jumlahHarga)}</td>
-                </tr>
-            `);
-        });
-
-        invoiceWindow.document.write(`
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="4" class="text-right">Sub Total</th>
-                                <th>${formatCurrency(subTotal)}</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <div class="name-date">
+                        <h4>Nama Toko: ${namaToko}</h4>
+                        <h4>Tanggal: ${tanggalInvoice}</h4>
+                    </div>
                 </div>
-            </body>
-            </html>
-        `);
-        invoiceWindow.document.close();
-        invoiceWindow.print();
-    }
+                <h4 class="text-center1">Nomor Invoice : #${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nama Barang</th>
+                            <th>Banyaknya</th>
+                            <th>Satuan</th>
+                            <th>Harga per Satuan</th>
+                            <th>Jumlah Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `);
 
-    document.addEventListener('DOMContentLoaded', () => {
-        loadFromLocalStorage();
+    let subTotal = 0;
+    items.forEach(item => {
+        const jumlahHarga = parseInt(item.jumlahHarga, 10);
+        subTotal += jumlahHarga;
+        invoiceWindow.document.write(`
+            <tr>
+                <td>${item.namaBarang}</td>
+                <td>${item.banyaknya}</td>
+                <td>${item.satuan}</td>
+                <td>${formatCurrency(item.harga)}</td>
+                <td>${formatCurrency(item.jumlahHarga)}</td>
+            </tr>
+        `);
     });
+
+    invoiceWindow.document.write(`
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="4" class="text-right">Sub Total</th>
+                            <th>${formatCurrency(subTotal)}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </body>
+        </html>
+    `);
+    invoiceWindow.document.close();
+    invoiceWindow.print();
+
+    // Save the invoice data to local storage
+    const invoiceData = {
+        namaToko: namaToko,
+        tanggalInvoice: tanggalInvoice,
+        items: items,
+        subTotal: subTotal
+    };
+    saveInvoiceToRekapan(invoiceData);
+}
+
+function saveInvoiceToRekapan(invoiceData) {
+    const rekapan = JSON.parse(localStorage.getItem('rekapan')) || [];
+    rekapan.push(invoiceData);
+    localStorage.setItem('rekapan', JSON.stringify(rekapan));
+}
 </script>
 
 </body>
