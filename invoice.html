@@ -213,6 +213,23 @@ function formatCurrency(value) {
     return 'Rp. ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
+let editIndex = null; // Variable to track the row being edited
+
+function editItem(button) {
+    const row = button.closest('tr');
+    const cells = row.getElementsByTagName('td');
+
+    document.getElementById('namaBarang').value = cells[1].textContent;
+    document.getElementById('banyaknya').value = cells[2].textContent;
+    document.getElementById('satuan').value = cells[3].textContent;
+    document.getElementById('harga').value = cells[4].textContent.replace('Rp. ', '').replace(/\./g, '');
+
+    editIndex = row.rowIndex; // Store the row index being edited
+
+    // Change the "Tambah Barang" button to "Update Barang"
+    document.querySelector('button[onclick="addItem()"]').textContent = "Update Barang";
+}
+
 function addItem() {
     const namaBarang = document.getElementById('namaBarang').value;
     const banyaknya = document.getElementById('banyaknya').value;
@@ -223,20 +240,43 @@ function addItem() {
         const jumlahHarga = banyaknya * harga;
         const formattedHarga = formatCurrency(harga);
         const formattedJumlahHarga = formatCurrency(jumlahHarga);
+
         const tableBody = document.getElementById('invoiceTableBody');
-        const newRow = document.createElement('tr');
 
-        newRow.innerHTML = `
-            <td>${itemCounter}</td> <!-- Serial number -->
-            <td>${namaBarang}</td>
-            <td>${banyaknya}</td>
-            <td>${satuan}</td>
-            <td>${formattedHarga}</td>
-            <td>${formattedJumlahHarga}</td>
-            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)"><i class="fas fa-trash-alt"></i></button></td>
-        `;
+        if (editIndex === null) {
+            // Add new row
+            const newRow = document.createElement('tr');
 
-        tableBody.appendChild(newRow);
+            newRow.innerHTML = `
+                <td>${itemCounter}</td> <!-- Serial number -->
+                <td>${namaBarang}</td>
+                <td>${banyaknya}</td>
+                <td>${satuan}</td>
+                <td>${formattedHarga}</td>
+                <td>${formattedJumlahHarga}</td>
+                <td>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="editItem(this)"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            `;
+
+            tableBody.appendChild(newRow);
+            itemCounter++; // Increment the counter after adding an item
+        } else {
+            // Edit existing row
+            const row = tableBody.rows[editIndex - 1];
+            row.cells[1].textContent = namaBarang;
+            row.cells[2].textContent = banyaknya;
+            row.cells[3].textContent = satuan;
+            row.cells[4].textContent = formattedHarga;
+            row.cells[5].textContent = formattedJumlahHarga;
+
+            // Reset editIndex after updating
+            editIndex = null;
+
+            // Change the button text back to "Tambah Barang"
+            document.querySelector('button[onclick="addItem()"]').textContent = "Tambah Barang";
+        }
 
         updateSubTotal();
         saveToLocalStorage();
@@ -245,10 +285,8 @@ function addItem() {
         Swal.fire({
             icon: 'success',
             title: 'Success',
-            text: 'Barang berhasil ditambahkan!',
+            text: 'Barang berhasil disimpan!',
         });
-
-        itemCounter++; // Increment the counter after adding an item
     } else {
         Swal.fire({
             icon: 'error',
@@ -264,6 +302,13 @@ function removeItem(button) {
     updateSerialNumbers(); // Recalculate serial numbers
     updateSubTotal();
     saveToLocalStorage();
+    
+    // If the deleted row was being edited, reset the form
+    if (editIndex !== null && row.rowIndex === editIndex) {
+        document.getElementById('invoiceForm').reset();
+        editIndex = null;
+        document.querySelector('button[onclick="addItem()"]').textContent = "Tambah Barang";
+    }
 }
 
 function clearAll() {
@@ -491,6 +536,7 @@ function generatePDF(namaToko, tanggalInvoice) {
     invoiceWindow.focus();
     invoiceWindow.print();
 }
+
 
 </script>
 
