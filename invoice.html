@@ -215,12 +215,13 @@ function formatCurrency(value) {
 
 function addItem() {
     const namaBarang = document.getElementById('namaBarang').value;
-    const banyaknya = document.getElementById('banyaknya').value;
+    const banyaknya = parseFloat(document.getElementById('banyaknya').value);
     const satuan = document.getElementById('satuan').value;
-    const harga = document.getElementById('harga').value;
+    const harga = parseFloat(document.getElementById('harga').value);
 
     if (namaBarang && banyaknya && satuan && harga) {
-        const jumlahHarga = banyaknya * harga;
+        // Multiply and round to avoid floating-point precision issues
+        const jumlahHarga = (banyaknya * harga).toFixed(2); // Keeps two decimal places
         const formattedHarga = formatCurrency(harga);
         const formattedJumlahHarga = formatCurrency(jumlahHarga);
         const tableBody = document.getElementById('invoiceTableBody');
@@ -257,7 +258,6 @@ function addItem() {
         });
     }
 }
-
 function removeItem(button) {
     const row = button.closest('tr');
     row.remove();
@@ -496,3 +496,4 @@ function generatePDF(namaToko, tanggalInvoice) {
 
 </body>
 </html>
+
