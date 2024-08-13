@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
         body {
             background: linear-gradient(135deg, #00b09b, #96c93d);
@@ -126,80 +127,72 @@
     </div>
 </nav>
 
-
-
-    <div class="container">
-        <form id="invoiceForm" class="border p-4 bg-light shadow-sm rounded">
-            <h4>Input Barang</h4>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="namaBarang">Nama Barang</label>
-                    <input type="text" class="form-control" id="namaBarang" name="namaBarang" required>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="banyaknya">Banyaknya</label>
-                    <input type="number" class="form-control" id="banyaknya" name="banyaknya" required>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="satuan">Satuan</label>
-                    <select id="satuan" class="form-control form-select" name="satuan" required>
-                        <option value="" disabled selected>Pilih satuan...</option>
-                        <option value="KG">Kg</option>
-                        <option value="Ons">Ons</option>
-                        <option value="Bal">Bal</option>
-                        <option value="Ikat">Ikat</option>
-                        <option value="Besek">Besek</option>
-                        <option value="Blok">Blok</option>
-                        <option value="Liter">Liter</option>
-                        <option value="Pax">Pax</option>
-                        <option value="Pcs">Pcs</option>
-                       <option value="X">X</option>
-
-                    </select>
-                </div>
+<div class="container">
+    <form id="invoiceForm" class="border p-4 bg-light shadow-sm rounded">
+        <h4>Input Barang</h4>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="namaBarang">Nama Barang</label>
+                <input type="text" class="form-control" id="namaBarang" name="namaBarang" required>
             </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="harga">Harga per Satuan</label>
-                    <input type="number" class="form-control" id="harga" name="harga" required>
-                </div>
+            <div class="form-group col-md-3">
+                <label for="banyaknya">Banyaknya</label>
+                <input type="number" class="form-control" id="banyaknya" name="banyaknya" required>
             </div>
-            <button type="button" class="btn btn-primary btn-block" onclick="addItem()">Tambah Barang</button>
-            <button type="button" class="btn btn-danger btn-block mt-2" onclick="clearAll()">Hapus Semua Data</button>
-        </form>
-
-        <h2 id="invoice" class="text-center mt-5">Daftar Barang</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead>
-    <tr>
-        <th>No</th> <!-- New column for serial number -->
-        <th>Nama Barang</th>
-        <th>Banyaknya</th>
-        <th>Satuan</th>
-        <th>Harga per Satuan</th>
-        <th>Jumlah Harga</th>
-        <th>Aksi</th>
-    </tr>
-</thead>
-<tbody id="invoiceTableBody">
-    <!-- Items will be added here -->
-</tbody>
-                <tbody id="invoiceTableBody">
-                    <!-- Items will be added here -->
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="5" class="text-right">Sub Total</th>
-                        <th id="subTotal">Rp. 0</th>
-                    </tr>
-                </tfoot>
-            </table>
+            <div class="form-group col-md-3">
+                <label for="satuan">Satuan</label>
+                <select id="satuan" class="form-control form-select" name="satuan" required>
+                    <option value="" disabled selected>Pilih satuan...</option>
+                    <option value="KG">Kg</option>
+                    <option value="Ons">Ons</option>
+                    <option value="Bal">Bal</option>
+                    <option value="Ikat">Ikat</option>
+                    <option value="Besek">Besek</option>
+                    <option value="Blok">Blok</option>
+                    <option value="Liter">Liter</option>
+                    <option value="Pax">Pax</option>
+                    <option value="Pcs">Pcs</option>
+                    <option value="X">X</option>
+                </select>
+            </div>
         </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="harga">Harga per Satuan</label>
+                <input type="number" class="form-control" id="harga" name="harga" required>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" onclick="addItem()">Tambah Barang</button>
+        <button type="button" class="btn btn-danger btn-block mt-2" onclick="clearAll()">Hapus Semua Data</button>
         <button type="button" class="btn btn-success btn-block mt-2" onclick="showDetailTokoPopup()">Generate PDF</button>
+    </form>
+
+    <h2 id="invoice" class="text-center mt-5">Daftar Barang</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Barang</th>
+                    <th>Banyaknya</th>
+                    <th>Satuan</th>
+                    <th>Harga per Satuan</th>
+                    <th>Jumlah Harga</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceTableBody">
+                <!-- Items will be added here -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5" class="text-right">Sub Total</th>
+                    <th id="subTotal">Rp. 0</th>
+                </tr>
+            </tfoot>
+        </table>
     </div>
 </div>
-
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -207,12 +200,18 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    let itemCounter = 1; // Initialize counter for serial numbers
+  
+  // Variabel global
+let itemCounter = 1;
 
+// Format dan parse mata uang
 function formatCurrency(value) {
     return 'Rp. ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
+function parseCurrency(value) {
+    return parseFloat(value.replace('Rp. ', '').replace(/\./g, ''));
+}
 function addItem() {
     const namaBarang = document.getElementById('namaBarang').value;
     const banyaknya = parseFloat(document.getElementById('banyaknya').value);
@@ -220,126 +219,193 @@ function addItem() {
     const harga = parseFloat(document.getElementById('harga').value);
 
     if (namaBarang && banyaknya && satuan && harga) {
-        // Multiply and round to avoid floating-point precision issues
-        const jumlahHarga = (banyaknya * harga).toFixed(2); // Keeps two decimal places
+        const jumlahHarga = Math.round(banyaknya * harga);
         const formattedHarga = formatCurrency(harga);
         const formattedJumlahHarga = formatCurrency(jumlahHarga);
         const tableBody = document.getElementById('invoiceTableBody');
-        const newRow = document.createElement('tr');
-
-        newRow.innerHTML = `
-            <td>${itemCounter}</td> <!-- Serial number -->
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${itemCounter++}</td>
             <td>${namaBarang}</td>
             <td>${banyaknya}</td>
             <td>${satuan}</td>
             <td>${formattedHarga}</td>
             <td>${formattedJumlahHarga}</td>
-            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)"><i class="fas fa-trash-alt"></i></button></td>
+            <td>
+                <button class="btn btn-warning btn-sm" onclick="editItem(this)">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Hapus</button>
+            </td>
         `;
-
-        tableBody.appendChild(newRow);
-
+        tableBody.appendChild(row);
         updateSubTotal();
-        saveToLocalStorage();
-
-        document.getElementById('invoiceForm').reset();
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Barang berhasil ditambahkan!',
-        });
-
-        itemCounter++; // Increment the counter after adding an item
+        saveData(); // Simpan data setelah menambah item
+        clearForm();
     } else {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Silakan isi semua field yang diperlukan!',
-        });
+        Swal.fire('Error', 'Semua field harus diisi!', 'error');
     }
-}
-function removeItem(button) {
-    const row = button.closest('tr');
-    row.remove();
-    updateSerialNumbers(); // Recalculate serial numbers
-    updateSubTotal();
-    saveToLocalStorage();
 }
 
 function clearAll() {
+    document.getElementById('invoiceTableBody').innerHTML = '';
+    updateSubTotal();
+    saveData(); // Simpan data setelah menghapus semua item
+}
+
+// Menghapus item dari tabel
+function deleteItem(button) {
+    button.closest('tr').remove();
+    updateSubTotal();
+    saveData(); // Simpan data setelah menghapus item
+}
+
+// Mengedit item menggunakan SweetAlert2
+function editItem(button) {
+    const row = button.closest('tr');
+    const cells = row.children;
+
+    const namaBarang = cells[1].textContent;
+    const banyaknya = cells[2].textContent;
+    const satuan = cells[3].textContent;
+    const harga = parseCurrency(cells[4].textContent);
+
+    Swal.fire({
+        title: 'Edit Barang',
+        html: `
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editNamaBarang">Nama Barang</label>
+                    <input type="text" id="editNamaBarang" class="form-control" value="${namaBarang}" required>
+                </div>
+                <div class="form-group">
+                    <label for="editBanyaknya">Banyaknya</label>
+                    <input type="number" id="editBanyaknya" class="form-control" value="${banyaknya}" required>
+                </div>
+                <div class="form-group">
+                    <label for="editSatuan">Satuan</label>
+                    <select id="editSatuan" class="form-control" required>
+                        <option value="" disabled>Pilih satuan...</option>
+                        <option value="KG" ${satuan === 'KG' ? 'selected' : ''}>Kg</option>
+                        <option value="Ons" ${satuan === 'Ons' ? 'selected' : ''}>Ons</option>
+                        <option value="Bal" ${satuan === 'Bal' ? 'selected' : ''}>Bal</option>
+                        <option value="Ikat" ${satuan === 'Ikat' ? 'selected' : ''}>Ikat</option>
+                        <option value="Besek" ${satuan === 'Besek' ? 'selected' : ''}>Besek</option>
+                        <option value="Blok" ${satuan === 'Blok' ? 'selected' : ''}>Blok</option>
+                        <option value="Liter" ${satuan === 'Liter' ? 'selected' : ''}>Liter</option>
+                        <option value="Pax" ${satuan === 'Pax' ? 'selected' : ''}>Pax</option>
+                        <option value="Pcs" ${satuan === 'Pcs' ? 'selected' : ''}>Pcs</option>
+                        <option value="X" ${satuan === 'X' ? 'selected' : ''}>X</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editHarga">Harga per Satuan</label>
+                    <input type="number" id="editHarga" class="form-control" value="${formatCurrency(harga)}" required>
+                </div>
+            </form>
+        `,
+        confirmButtonText: 'Simpan',
+        showCancelButton: true,
+        cancelButtonText: 'Batal',
+        preConfirm: () => {
+            const namaBarang = Swal.getPopup().querySelector('#editNamaBarang').value;
+            const banyaknya = parseFloat(Swal.getPopup().querySelector('#editBanyaknya').value);
+            const satuan = Swal.getPopup().querySelector('#editSatuan').value;
+            const harga = parseCurrency(Swal.getPopup().querySelector('#editHarga').value);
+
+            if (!namaBarang || !banyaknya || !satuan || !harga) {
+                Swal.showValidationMessage('Semua field harus diisi!');
+                return false;
+            }
+
+            return { namaBarang, banyaknya, satuan, harga };
+        }
+    }).then(result => {
+        if (result.isConfirmed) {
+            const { namaBarang, banyaknya, satuan, harga } = result.value;
+            const jumlahHarga = Math.round(banyaknya * harga);
+            const formattedJumlahHarga = formatCurrency(jumlahHarga);
+
+            row.innerHTML = `
+                <td>${cells[0].textContent}</td>
+                <td>${namaBarang}</td>
+                <td>${banyaknya}</td>
+                <td>${satuan}</td>
+                <td>${formatCurrency(harga)}</td>
+                <td>${formattedJumlahHarga}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editItem(this)">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Hapus</button>
+                </td>
+            `;
+
+            saveData(); // Simpan data setelah mengedit item
+            Swal.fire('Berhasil', 'Data berhasil diperbarui!', 'success');
+        }
+    });
+}
+
+// Menyimpan data ke localStorage
+function saveData() {
+    const rows = document.querySelectorAll('#invoiceTableBody tr');
+    const data = [];
+
+    rows.forEach(row => {
+        const cells = row.children;
+        data.push({
+            namaBarang: cells[1].textContent,
+            banyaknya: cells[2].textContent,
+            satuan: cells[3].textContent,
+            harga: parseCurrency(cells[4].textContent),
+            jumlahHarga: parseCurrency(cells[5].textContent),
+        });
+    });
+
+    localStorage.setItem('invoiceData', JSON.stringify(data));
+    Swal.fire('Success', 'Data berhasil disimpan!', 'success');
+}
+
+// Memuat data dari localStorage
+function loadData() {
+    const data = JSON.parse(localStorage.getItem('invoiceData')) || [];
+    itemCounter = 1; // Reset item counter
+
     const tableBody = document.getElementById('invoiceTableBody');
     tableBody.innerHTML = '';
-    itemCounter = 1; // Reset the counter
-    updateSubTotal();
-    localStorage.removeItem('invoiceItems');
-    Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'Semua data telah dihapus!',
-    });
-}
 
-function updateSerialNumbers() {
-    const tableBody = document.getElementById('invoiceTableBody');
-    let rowNumber = 1;
-    for (let row of tableBody.rows) {
-        row.cells[0].textContent = rowNumber++;
-    }
-}
-
-function updateSubTotal() {
-    const tableBody = document.getElementById('invoiceTableBody');
-    let subTotal = 0;
-    
-    for (let row of tableBody.rows) {
-        // Ambil teks dari sel jumlah harga dan hapus format mata uang
-        const jumlahHarga = parseInt(row.cells[5].textContent.replace('Rp. ', '').replace(/\./g, ''), 10);
-        
-        // Tambahkan jumlah harga ke subtotal
-        subTotal += isNaN(jumlahHarga) ? 0 : jumlahHarga;
-    }
-
-    // Update elemen subtotal dengan format mata uang
-    document.getElementById('subTotal').textContent = formatCurrency(subTotal);
-}
-
-function saveToLocalStorage() {
-    const tableBody = document.getElementById('invoiceTableBody');
-    const items = Array.from(tableBody.rows).map(row => {
-        return {
-            namaBarang: row.cells[1].textContent,
-            banyaknya: row.cells[2].textContent,
-            satuan: row.cells[3].textContent,
-            harga: row.cells[4].textContent.replace('Rp. ', '').replace(/\./g, ''),
-            jumlahHarga: row.cells[5].textContent.replace('Rp. ', '').replace(/\./g, '')
-        };
-    });
-    localStorage.setItem('invoiceItems', JSON.stringify(items));
-}
-
-function loadFromLocalStorage() {
-    const items = JSON.parse(localStorage.getItem('invoiceItems')) || [];
-    const tableBody = document.getElementById('invoiceTableBody');
-    
-    items.forEach(item => {
+    data.forEach(item => {
         const formattedHarga = formatCurrency(item.harga);
         const formattedJumlahHarga = formatCurrency(item.jumlahHarga);
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td>${itemCounter}</td> <!-- Serial number -->
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${itemCounter++}</td>
             <td>${item.namaBarang}</td>
             <td>${item.banyaknya}</td>
             <td>${item.satuan}</td>
             <td>${formattedHarga}</td>
             <td>${formattedJumlahHarga}</td>
-            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)"><i class="fas fa-trash-alt"></i></button></td>
+            <td>
+                <button class="btn btn-warning btn-sm" onclick="editItem(this)">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Hapus</button>
+            </td>
         `;
-        tableBody.appendChild(newRow);
-        itemCounter++; // Increment the counter for each loaded item
+        tableBody.appendChild(row);
     });
     updateSubTotal();
 }
 
+// Mengupdate total harga
+function updateSubTotal() {
+    const rows = document.querySelectorAll('#invoiceTableBody tr');
+    let subTotal = 0;
+    rows.forEach(row => {
+        const jumlahHarga = row.cells[5].textContent;
+        subTotal += parseCurrency(jumlahHarga);
+    });
+    document.getElementById('subTotal').textContent = formatCurrency(subTotal);
+}
+
+// Menghasilkan PDF
+// Menghasilkan PDF
 function showDetailTokoPopup() {
     Swal.fire({
         title: 'Detail Toko',
@@ -370,7 +436,7 @@ function showDetailTokoPopup() {
 }
 
 function generatePDF(namaToko, tanggalInvoice) {
-    const items = JSON.parse(localStorage.getItem('invoiceItems'));
+    const items = JSON.parse(localStorage.getItem('invoiceData'));
     const logoUrl = '1.png'; // Ganti dengan URL atau path logo Anda
 
     const invoiceWindow = window.open('', '_blank');
@@ -492,8 +558,9 @@ function generatePDF(namaToko, tanggalInvoice) {
     invoiceWindow.print();
 }
 
-</script>
+// Memuat data saat halaman dimuat
+document.addEventListener('DOMContentLoaded', loadData);
 
+</script>
 </body>
 </html>
-
