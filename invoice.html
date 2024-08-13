@@ -165,6 +165,8 @@
         <button type="button" class="btn btn-primary btn-block" onclick="addItem()">Tambah Barang</button>
         <button type="button" class="btn btn-danger btn-block mt-2" onclick="clearAll()">Hapus Semua Data</button>
         <button type="button" class="btn btn-success btn-block mt-2" onclick="showDetailTokoPopup()">Generate PDF</button>
+        <input type="file" id="fileUpload" accept=".txt" />
+<button onclick="uploadFile()">Upload</button>
     </form>
 
     <h2 id="invoice" class="text-center mt-5">Daftar Barang</h2>
@@ -206,11 +208,60 @@ let itemCounter = 1;
 
 // Format dan parse mata uang
 function formatCurrency(value) {
-    return 'Rp. ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
 }
 
 function parseCurrency(value) {
-    return parseFloat(value.replace('Rp. ', '').replace(/\./g, ''));
+    return parseFloat(value.replace(/[^0-9,-]+/g, ''));
+}
+function uploadFile() {
+    const fileInput = document.getElementById('fileUpload');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        Swal.fire('Error', 'Pilih file terlebih dahulu!', 'error');
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const content = event.target.result;
+        processFileContent(content);
+    };
+
+    reader.readAsText(file);
+}
+
+function processFileContent(content) {
+    const lines = content.split('\n');
+    lines.forEach(line => {
+        const [namaBarang, banyaknya, satuan, harga] = line.split(',');
+        if (namaBarang && banyaknya && satuan && harga) {
+            // Tambahkan item ke tabel
+            const formattedHarga = formatCurrency(parseFloat(harga));
+            const jumlahHarga = Math.round(parseFloat(banyaknya) * parseFloat(harga));
+            const formattedJumlahHarga = formatCurrency(jumlahHarga);
+
+            const tableBody = document.getElementById('invoiceTableBody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${itemCounter++}</td>
+                <td>${namaBarang}</td>
+                <td>${banyaknya}</td>
+                <td>${satuan}</td>
+                <td>${formattedHarga}</td>
+                <td>${formattedJumlahHarga}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editItem(this)">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteItem(this)">Hapus</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        }
+    });
+    updateSubTotal();
+    saveData(); // Simpan data setelah mengupload file
 }
 function addItem() {
     const namaBarang = document.getElementById('namaBarang').value;
