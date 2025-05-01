@@ -116,8 +116,8 @@
     <table id="tabel">
       <thead>
         <tr>
-          <th>Referensi</th>
           <th>Tanggal</th>
+          <th>Referensi</th>
           <th>Jumlah</th>
           <th class="no-print">Aksi</th>
         </tr>
@@ -145,9 +145,9 @@
     let totalJumlah = 0;
 
     function formatTanggal(tanggal) {
-  const [year, month, day] = tanggal.split("-");
-  return `${day}/${month}/${year}`;
-}
+      const [year, month, day] = tanggal.split("-");
+      return `${day}/${month}/${year}`;
+    }
 
     function tambahData() {
       const referensi = document.getElementById("referensi").value;
@@ -161,14 +161,14 @@
 
       const tr = document.createElement("tr");
 
-      const tdReferensi = document.createElement("td");
-      tdReferensi.textContent = referensi;
-
       const tdTanggal = document.createElement("td");
       tdTanggal.textContent = formatTanggal(tanggal);
 
+      const tdReferensi = document.createElement("td");
+      tdReferensi.textContent = referensi;
+
       const tdJumlah = document.createElement("td");
-      tdJumlah.textContent = `Rp ${jumlah.toLocaleString()}`;
+      tdJumlah.textContent = `Rp ${jumlah.toLocaleString('id-ID')}`;
 
       const tdHapus = document.createElement("td");
       tdHapus.classList.add("no-print");
@@ -182,8 +182,8 @@
       };
       tdHapus.appendChild(btn);
 
-      tr.appendChild(tdReferensi);
       tr.appendChild(tdTanggal);
+      tr.appendChild(tdReferensi);
       tr.appendChild(tdJumlah);
       tr.appendChild(tdHapus);
 
@@ -199,7 +199,7 @@
 
     function updateSubtotal() {
       document.getElementById("subtotal-jumlah").innerText =
-        `Sub Total Jumlah: Rp ${totalJumlah.toLocaleString()}`;
+        `Sub Total Jumlah: Rp ${totalJumlah.toLocaleString('id-ID')}`;
     }
 
     function hapusSemua() {
@@ -216,7 +216,7 @@
       const pdfWidth = doc.internal.pageSize.getWidth();
       const pdfHeight = doc.internal.pageSize.getHeight();
 
-      const logoUrl = "https://i.ibb.co/bjDmYKt9/file-0000000032ec61f7af31558837a6cfa1-removebg-preview.png";
+      const logoUrl = "file_0000000032ec61f7af31558837a6cfa1-removebg-preview.png";
       const logoImg = new Image();
       logoImg.crossOrigin = "anonymous";
       logoImg.src = logoUrl;
@@ -245,7 +245,6 @@
           cell.style.border = "1px solid black";
         });
 
-        // Sembunyikan kolom aksi sebelum render
         const aksiKolom = element.querySelectorAll(".no-print");
         aksiKolom.forEach(el => el.style.display = "none");
 
