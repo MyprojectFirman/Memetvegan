@@ -80,6 +80,20 @@
       color: #007bff;
       margin-top: 10px;
     }
+    .hapus-btn {
+      background-color: #dc3545;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .hapus-btn:hover {
+      background-color: #c82333;
+    }
+    .no-print {
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -105,12 +119,13 @@
           <th>Referensi</th>
           <th>Tanggal</th>
           <th>Jumlah</th>
+          <th class="no-print">Aksi</th>
         </tr>
       </thead>
       <tbody></tbody>
       <tfoot>
         <tr>
-          <td colspan="3" id="subtotal-jumlah">Sub Total Jumlah: Rp 0</td>
+          <td colspan="4" id="subtotal-jumlah">Sub Total Jumlah: Rp 0</td>
         </tr>
       </tfoot>
     </table>
@@ -122,13 +137,17 @@
     <div id="progress">Sedang memproses PDF...</div>
   </div>
 
-  <!-- Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
     const tbody = document.querySelector("#tabel tbody");
     let totalJumlah = 0;
+
+    function formatTanggal(tanggal) {
+  const [year, month, day] = tanggal.split("-");
+  return `${day}/${month}/${year}`;
+}
 
     function tambahData() {
       const referensi = document.getElementById("referensi").value;
@@ -141,11 +160,33 @@
       }
 
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${referensi}</td>
-        <td>${tanggal}</td>
-        <td>Rp ${jumlah.toLocaleString()}</td>
-      `;
+
+      const tdReferensi = document.createElement("td");
+      tdReferensi.textContent = referensi;
+
+      const tdTanggal = document.createElement("td");
+      tdTanggal.textContent = formatTanggal(tanggal);
+
+      const tdJumlah = document.createElement("td");
+      tdJumlah.textContent = `Rp ${jumlah.toLocaleString()}`;
+
+      const tdHapus = document.createElement("td");
+      tdHapus.classList.add("no-print");
+      const btn = document.createElement("button");
+      btn.textContent = "Hapus";
+      btn.className = "hapus-btn";
+      btn.onclick = () => {
+        tbody.removeChild(tr);
+        totalJumlah -= jumlah;
+        updateSubtotal();
+      };
+      tdHapus.appendChild(btn);
+
+      tr.appendChild(tdReferensi);
+      tr.appendChild(tdTanggal);
+      tr.appendChild(tdJumlah);
+      tr.appendChild(tdHapus);
+
       tbody.appendChild(tr);
 
       totalJumlah += jumlah;
@@ -167,80 +208,70 @@
       updateSubtotal();
     }
 
-async function generatePDF() {
-  document.getElementById("progress").style.display = "block";
+    async function generatePDF() {
+      document.getElementById("progress").style.display = "block";
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
-  const pdfWidth = doc.internal.pageSize.getWidth();
-  const pdfHeight = doc.internal.pageSize.getHeight();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+      const pdfWidth = doc.internal.pageSize.getWidth();
+      const pdfHeight = doc.internal.pageSize.getHeight();
 
-  // Logo watermark
-  const logoUrl = "https://i.ibb.co/bjDmYKt9/file-0000000032ec61f7af31558837a6cfa1-removebg-preview.png";
-  const logoImg = new Image();
-  logoImg.crossOrigin = "anonymous";
-  logoImg.src = logoUrl;
+      const logoUrl = "https://i.ibb.co/bjDmYKt9/file-0000000032ec61f7af31558837a6cfa1-removebg-preview.png";
+      const logoImg = new Image();
+      logoImg.crossOrigin = "anonymous";
+      logoImg.src = logoUrl;
 
-  logoImg.onload = async () => {
-    // Tambahkan watermark besar (400x400 px)
-    doc.setGState(new doc.GState({ opacity: 0.07 }));
-    const wmSize = 400;
-    doc.addImage(logoImg, 'PNG', (pdfWidth - wmSize) / 2, (pdfHeight - wmSize) / 2, wmSize, wmSize);
-    doc.setGState(new doc.GState({ opacity: 1 }));
+      logoImg.onload = async () => {
+        doc.setGState(new doc.GState({ opacity: 0.07 }));
+        const wmSize = 400;
+        doc.addImage(logoImg, 'PNG', (pdfWidth - wmSize) / 2, (pdfHeight - wmSize) / 2, wmSize, wmSize);
+        doc.setGState(new doc.GState({ opacity: 1 }));
 
-    // Nomor nota
-    const now = new Date();
-    const tgl = String(now.getDate()).padStart(2, '0');
-    const bln = String(now.getMonth() + 1).padStart(2, '0');
-    const thn = String(now.getFullYear()).slice(-2);
-    const rand = Math.floor(10000 + Math.random() * 89999);
-    const nota = `${tgl}${bln}${thn}${rand}`;
+        const now = new Date();
+        const tgl = String(now.getDate()).padStart(2, '0');
+        const bln = String(now.getMonth() + 1).padStart(2, '0');
+        const thn = String(now.getFullYear()).slice(-2);
+        const rand = Math.floor(10000 + Math.random() * 89999);
+        const nota = `${tgl}${bln}${thn}${rand}`;
 
-    doc.setFontSize(13);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`No Nota: ${nota}`, 40, 50);
+        doc.setFontSize(13);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`No Nota: ${nota}`, 40, 50);
 
-    // Ambil elemen untuk ditangkap
-    const element = document.getElementById("exportArea");
+        const element = document.getElementById("exportArea");
 
-    // Tambahkan border ke semua sel sebelum konversi canvas
-    const cells = element.querySelectorAll("th, td");
-    cells.forEach(cell => {
-      cell.style.border = "1px solid black";
-    });
+        const cells = element.querySelectorAll("th, td");
+        cells.forEach(cell => {
+          cell.style.border = "1px solid black";
+        });
 
-    // Render ke canvas
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-    const imgData = canvas.toDataURL('image/png');
+        // Sembunyikan kolom aksi sebelum render
+        const aksiKolom = element.querySelectorAll(".no-print");
+        aksiKolom.forEach(el => el.style.display = "none");
 
-    const imgProps = { width: canvas.width, height: canvas.height };
-    let pdfTableHeight = (imgProps.height * (pdfWidth - 80)) / imgProps.width;
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+        const imgData = canvas.toDataURL('image/png');
 
-    // Cek apakah gambar lebih tinggi dari satu halaman, jika iya, tambahkan halaman baru
-    if (pdfTableHeight > pdfHeight - 70) {
-      doc.addImage(imgData, 'PNG', 40, 70, pdfWidth - 80, pdfHeight - 70);
-      doc.addPage(); // Menambahkan halaman baru
-      doc.addImage(imgData, 'PNG', 40, 70, pdfWidth - 80, pdfTableHeight);
-    } else {
-      doc.addImage(imgData, 'PNG', 40, 70, pdfWidth - 80, pdfTableHeight);
+        const imgProps = { width: canvas.width, height: canvas.height };
+        const pdfTableHeight = (imgProps.height * (pdfWidth - 80)) / imgProps.width;
+
+        doc.addImage(imgData, 'PNG', 40, 70, pdfWidth - 80, pdfTableHeight);
+        doc.save("data-management.pdf");
+
+        document.getElementById("progress").style.display = "none";
+
+        cells.forEach(cell => {
+          cell.style.border = "";
+        });
+        aksiKolom.forEach(el => el.style.display = "");
+      };
+
+      logoImg.onerror = () => {
+        alert("Gagal memuat watermark logo.");
+        document.getElementById("progress").style.display = "none";
+      };
     }
-
-    doc.save("data-management.pdf");
-
-    document.getElementById("progress").style.display = "none";
-
-    // Bersihkan border setelah render
-    cells.forEach(cell => {
-      cell.style.border = "";
-    });
-  };
-
-  logoImg.onerror = () => {
-    alert("Gagal memuat watermark logo.");
-    document.getElementById("progress").style.display = "none";
-  };
-}
-</script>
+  </script>
 
 </body>
 </html>
