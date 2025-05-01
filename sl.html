@@ -1,416 +1,246 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Management</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f8fafc;
-            color: #333;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr.status-belum-bayar {
-            background-color: #fdecea;
-        }
-
-        tr.status-sudah-bayar {
-            background-color: #e6f7e9;
-        }
-
-form {
-            background-color: #f8fafc;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #555;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        input[type="button"], button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-
-        input[type="button"]:hover, button:hover {
-            background-color: #0056b3;
-        }
-
-        #sub-total-belum-bayar, #sub-total-sudah-bayar {
-            font-weight: bold;
-            text-align: right;
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 18px;
-        }
-
-        #sub-total-belum-bayar {
-            color: red;
-            background-color: #fdecea;
-        }
-
-        #sub-total-sudah-bayar {
-            color: green;
-            background-color: #e6f7e9;
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .button-group button {
-            flex: 1;
-        }
-
-        #progress-bar-container {
-            margin-top: 20px;
-        }
-
-        #progress-bar {
-            width: 0%;
-            height: 20px;
-            background-color: #007bff;
-            border-radius: 4px;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8">
+  <title>Data Management - Memet Supplier</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f8f9fa;
+    }
+    h2 {
+      text-align: center;
+    }
+    .card {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: auto;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      background-color: #007bff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    th {
+      background-color: #007bff;
+      color: #fff;
+      padding: 12px;
+      font-weight: bold;
+      text-align: center;
+    }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+      font-size: 14px;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    tfoot td {
+      background-color: #e5ffe5;
+      font-weight: bold;
+      color: #007b00;
+      font-size: 15px;
+    }
+    #button-area {
+      text-align: center;
+      margin-top: 20px;
+    }
+    #progress {
+      display: none;
+      text-align: center;
+      color: #007bff;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Data Management</h2>
-        
-        <form id="data-form">
-            <label for="referensi">Referensi:</label>
-            <input type="text" id="referensi" name="referensi" placeholder="Masukkan referensi" required>
-            
-            <label for="tanggal">Tanggal:</label>
-            <input type="date" id="tanggal" name="tanggal" required>
-            
-            <label for="tanggal_jatuh_tempo">Tanggal Jatuh Tempo:</label>
-            <input type="date" id="tanggal_jatuh_tempo" name="tanggal_jatuh_tempo" required>
-            
-            <label for="status">Status:</label>
-            <select id="status" name="status">
-                <option value="Belum Dibayar">Belum Dibayar</option>
-                <option value="Sudah Dibayar">Sudah Dibayar</option>
-            </select>
-            
-            <label for="sisa_tagihan">Sisa Tagihan:</label>
-            <input type="number" id="sisa_tagihan" name="sisa_tagihan" placeholder="Masukkan sisa tagihan" required>
-            
-            <input type="button" value="Tambah Data" onclick="addData()">
-        </form>
+  <h2>Data Management</h2>
+  <div class="card">
+    <label>Referensi:</label>
+    <input type="text" id="referensi" placeholder="Masukkan referensi">
 
-        <h2>Data Table</h2>
-        <table id="data-table">
-            <thead>
-                <tr>
-                    <th>Referensi</th>
-                    <th>Tanggal</th>
-                    <th>Tanggal Jatuh Tempo</th>
-                    <th>Status</th>
-                    <th>Sisa Tagihan</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows will be dynamically added here -->
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="6" id="sub-total-belum-bayar">Sub Total Belum Dibayar: Rp 0</td>
-                </tr>
-                <tr>
-                    <td colspan="6" id="sub-total-sudah-bayar">Sub Total Sudah Dibayar: Rp 0</td>
-                </tr>
-            </tfoot>
-        </table>
+    <label>Tanggal:</label>
+    <input type="date" id="tanggal">
 
-        <!-- Progress Bar -->
-        <div id="progress-bar-container" style="display: none;">
-            <div id="progress-bar"></div>
-        </div>
+    <label>Jumlah:</label>
+    <input type="number" id="jumlah" placeholder="Masukkan jumlah (Rp)">
 
-        <div class="button-group">
-            <button onclick="clearData()">Hapus Semua Data</button>
-            <button onclick="generatePDF()">Generate PDF</button>
-        </div>
-    </div>
+    <button onclick="tambahData()">Tambah Data</button>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.18/jspdf.plugin.autotable.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            loadDataFromLocalStorage();
-            calculateSubTotal();
-        });
+  <div id="exportArea">
+    <table id="tabel">
+      <thead>
+        <tr>
+          <th>Referensi</th>
+          <th>Tanggal</th>
+          <th>Jumlah</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" id="subtotal-jumlah">Sub Total Jumlah: Rp 0</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 
-        function formatCurrency(value) {
-            return 'Rp ' + value.toLocaleString('id-ID').replace(/\./g, ',');
-        }
+  <div id="button-area">
+    <button onclick="hapusSemua()">Hapus Semua Data</button>
+    <button onclick="generatePDF()">Generate PDF</button>
+    <div id="progress">Sedang memproses PDF...</div>
+  </div>
 
-        function addData() {
-            var referensi = document.getElementById("referensi").value;
-            var tanggal = document.getElementById("tanggal").value;
-            var tanggalJatuhTempo = document.getElementById("tanggal_jatuh_tempo").value;
-            var status = document.getElementById("status").value;
-            var sisaTagihan = parseFloat(document.getElementById("sisa_tagihan").value);
-            var total = sisaTagihan;
+  <!-- Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-            var table = document.getElementById("data-table").getElementsByTagName('tbody')[0];
-            var row = table.insertRow();
+  <script>
+    const tbody = document.querySelector("#tabel tbody");
+    let totalJumlah = 0;
 
-            row.className = status === "Belum Dibayar" ? "status-belum-bayar" : "status-sudah-bayar";
+    function tambahData() {
+      const referensi = document.getElementById("referensi").value;
+      const tanggal = document.getElementById("tanggal").value;
+      const jumlah = parseInt(document.getElementById("jumlah").value) || 0;
 
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3);
-            var cell5 = row.insertCell(4);
-            var cell6 = row.insertCell(5);
+      if (!referensi || !tanggal || jumlah === 0) {
+        alert("Harap isi semua data dengan benar!");
+        return;
+      }
 
-            cell1.innerHTML = referensi;
-            cell2.innerHTML = tanggal;
-            cell3.innerHTML = tanggalJatuhTempo;
-            cell4.innerHTML = status;
-            cell5.innerHTML = formatCurrency(sisaTagihan);
-            cell6.innerHTML = formatCurrency(total);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${referensi}</td>
+        <td>${tanggal}</td>
+        <td>Rp ${jumlah.toLocaleString()}</td>
+      `;
+      tbody.appendChild(tr);
 
-            saveDataToLocalStorage();
-            calculateSubTotal();
-            document.getElementById("data-form").reset();
-        }
+      totalJumlah += jumlah;
+      updateSubtotal();
 
-        function calculateSubTotal() {
-            var table = document.getElementById("data-table").getElementsByTagName('tbody')[0];
-            var rows = table.getElementsByTagName('tr');
-            var subTotalBelumBayar = 0;
-            var subTotalSudahBayar = 0;
+      document.getElementById("referensi").value = "";
+      document.getElementById("tanggal").value = "";
+      document.getElementById("jumlah").value = "";
+    }
 
-            for (var i = 0; i < rows.length; i++) {
-                var totalCell = rows[i].getElementsByTagName('td')[5];
-                var statusCell = rows[i].getElementsByTagName('td')[3];
-                var totalValue = parseFloat(totalCell.innerHTML.replace(/Rp |,/g, ''));
+    function updateSubtotal() {
+      document.getElementById("subtotal-jumlah").innerText =
+        `Sub Total Jumlah: Rp ${totalJumlah.toLocaleString()}`;
+    }
 
-                if (statusCell.innerHTML === "Belum Dibayar") {
-                    subTotalBelumBayar += totalValue;
-                } else if (statusCell.innerHTML === "Sudah Dibayar") {
-                    subTotalSudahBayar += totalValue;
-                }
-            }
+    function hapusSemua() {
+      tbody.innerHTML = '';
+      totalJumlah = 0;
+      updateSubtotal();
+    }
 
-            document.getElementById("sub-total-belum-bayar").innerHTML = "Sub Total Belum Dibayar: " + formatCurrency(subTotalBelumBayar);
-            document.getElementById("sub-total-sudah-bayar").innerHTML = "Sub Total Sudah Dibayar: " + formatCurrency(subTotalSudahBayar);
-        }
+async function generatePDF() {
+  document.getElementById("progress").style.display = "block";
 
-        function saveDataToLocalStorage() {
-            var tableData = [];
-            var table = document.getElementById("data-table").getElementsByTagName('tbody')[0];
-            var rows = table.getElementsByTagName('tr');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+  const pdfWidth = doc.internal.pageSize.getWidth();
+  const pdfHeight = doc.internal.pageSize.getHeight();
 
-            for (var i = 0; i < rows.length; i++) {
-                var cells = rows[i].getElementsByTagName('td');
-                var rowData = {
-                    referensi: cells[0].innerHTML,
-                    tanggal: cells[1].innerHTML,
-                    tanggalJatuhTempo: cells[2].innerHTML,
-                    status: cells[3].innerHTML,
-                    sisaTagihan: cells[4].innerHTML.replace(/Rp |,/g, ''),
-                    total: cells[5].innerHTML.replace(/Rp |,/g, '')
-                };
-                tableData.push(rowData);
-            }
+  // Logo watermark
+  const logoUrl = "https://i.ibb.co/bjDmYKt9/file-0000000032ec61f7af31558837a6cfa1-removebg-preview.png";
+  const logoImg = new Image();
+  logoImg.crossOrigin = "anonymous";
+  logoImg.src = logoUrl;
 
-            localStorage.setItem('tableData', JSON.stringify(tableData));
-        }
+  logoImg.onload = async () => {
+    // Tambahkan watermark besar (400x400 px)
+    doc.setGState(new doc.GState({ opacity: 0.07 }));
+    const wmSize = 400;
+    doc.addImage(logoImg, 'PNG', (pdfWidth - wmSize) / 2, (pdfHeight - wmSize) / 2, wmSize, wmSize);
+    doc.setGState(new doc.GState({ opacity: 1 }));
 
-        function loadDataFromLocalStorage() {
-            var tableData = JSON.parse(localStorage.getItem('tableData')) || [];
-            var table = document.getElementById("data-table").getElementsByTagName('tbody')[0];
+    // Nomor nota
+    const now = new Date();
+    const tgl = String(now.getDate()).padStart(2, '0');
+    const bln = String(now.getMonth() + 1).padStart(2, '0');
+    const thn = String(now.getFullYear()).slice(-2);
+    const rand = Math.floor(10000 + Math.random() * 89999);
+    const nota = `${tgl}${bln}${thn}${rand}`;
 
-            tableData.forEach(function(rowData) {
-                var row = table.insertRow();
+    doc.setFontSize(13);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`No Nota: ${nota}`, 40, 50);
 
-row.className = rowData.status === "Belum Dibayar" ? "status-belum-bayar" : "status-sudah-bayar";
+    // Ambil elemen untuk ditangkap
+    const element = document.getElementById("exportArea");
 
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
-                var cell4 = row.insertCell(3);
-                var cell5 = row.insertCell(4);
-                var cell6 = row.insertCell(5);
+    // Tambahkan border ke semua sel sebelum konversi canvas
+    const cells = element.querySelectorAll("th, td");
+    cells.forEach(cell => {
+      cell.style.border = "1px solid black";
+    });
 
-                cell1.innerHTML = rowData.referensi;
-                cell2.innerHTML = rowData.tanggal;
-                cell3.innerHTML = rowData.tanggalJatuhTempo;
-                cell4.innerHTML = rowData.status;
-                cell5.innerHTML = formatCurrency(parseFloat(rowData.sisaTagihan));
-                cell6.innerHTML = formatCurrency(parseFloat(rowData.total));
-            });
+    // Render ke canvas
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
 
-            calculateSubTotal();
-        }
+    const imgProps = { width: canvas.width, height: canvas.height };
+    let pdfTableHeight = (imgProps.height * (pdfWidth - 80)) / imgProps.width;
 
-        function clearData() {
-            var tableBody = document.getElementById("data-table").getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = "";
-            localStorage.removeItem('tableData');
-            calculateSubTotal();
-            Swal.fire({
-                icon: 'success',
-                title: 'Data Cleared',
-                text: 'All data has been successfully cleared!',
-            });
-        }
+    // Cek apakah gambar lebih tinggi dari satu halaman, jika iya, tambahkan halaman baru
+    if (pdfTableHeight > pdfHeight - 70) {
+      doc.addImage(imgData, 'PNG', 40, 70, pdfWidth - 80, pdfHeight - 70);
+      doc.addPage(); // Menambahkan halaman baru
+      doc.addImage(imgData, 'PNG', 40, 70, pdfWidth - 80, pdfTableHeight);
+    } else {
+      doc.addImage(imgData, 'PNG', 40, 70, pdfWidth - 80, pdfTableHeight);
+    }
 
-        function generatePDF() {
-            Swal.fire({
-                title: 'Generating PDF',
-                html: 'Please wait...',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+    doc.save("data-management.pdf");
 
-            const { jsPDF } = window.jspdf;
-            var doc = new jsPDF();
+    document.getElementById("progress").style.display = "none";
 
-            doc.text("Data Table", 14, 16);
+    // Bersihkan border setelah render
+    cells.forEach(cell => {
+      cell.style.border = "";
+    });
+  };
 
-            const headers = [["Referensi", "Tanggal", "Tanggal Jatuh Tempo", "Status", "Sisa Tagihan", "Total"]];
-
-            var table = document.getElementById("data-table").getElementsByTagName('tbody')[0];
-            var rows = table.getElementsByTagName('tr');
-            var data = [];
-
-            // Show the progress bar
-            document.getElementById('progress-bar-container').style.display = 'block';
-            var progressBar = document.getElementById('progress-bar');
-
-            for (var i = 0; i < rows.length; i++) {
-                var cells = rows[i].getElementsByTagName('td');
-                var rowData = [
-                    cells[0].innerHTML,
-                    cells[1].innerHTML,
-                    cells[2].innerHTML,
-                    cells[3].innerHTML,
-                    cells[4].innerHTML,
-                    cells[5].innerHTML
-                ];
-                data.push(rowData);
-
-                // Update the progress bar
-                var progress = ((i + 1) / rows.length) * 100;
-                progressBar.style.width = progress + '%';
-            }
-
-            doc.autoTable({
-                startY: 20,
-                head: headers,
-                body: data,
-            });
-
-            var subTotalBelumBayar = document.getElementById("sub-total-belum-bayar").textContent;
-            var subTotalSudahBayar = document.getElementById("sub-total-sudah-bayar").textContent;
-
-            doc.autoTable({
-                startY: doc.autoTable.previous.finalY + 10,
-                head: [[, 'Amount']],
-                body: [
-                    [ subTotalBelumBayar],
-                    [ subTotalSudahBayar]
-                ],
-                theme: 'plain',
-                styles: {
-                    fontStyle: 'bold',
-                    halign: 'right'
-                }
-            });
-
-            doc.save("data-table.pdf");
-
-            // Hide the progress bar after completion
-            progressBar.style.width = '0%';
-            document.getElementById('progress-bar-container').style.display = 'none';
-
-            // Show success alert
-            Swal.fire({
-                icon: 'success',
-                title: 'PDF Generated',
-                text: 'Your PDF file has been generated and downloaded successfully!',
-            });
-        }
-    </script>
+  logoImg.onerror = () => {
+    alert("Gagal memuat watermark logo.");
+    document.getElementById("progress").style.display = "none";
+  };
+}
+</script>
 
 </body>
 </html>
