@@ -1,0 +1,114 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #ffffff;
+}
+
+h2 {
+  text-align: center;
+}
+
+.card {
+  background-color: rgba(0,0,0,0);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px black;
+  max-width: 500px;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  background-color: #007bff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px black;
+ 
+}
+
+th {
+  background-color: green;
+  color: #fff;
+  padding: 12px;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #000;
+}
+
+td {
+  padding: 12px;
+  border: 1px solid #999;
+  text-align: center;
+  font-size: 14px;
+  background-color: transparent;
+}
+
+tr.subtotal-row {
+  font-weight: bold;
+  border-top: 2px solid #999;
+}
+
+tr.total-row td {
+  font-weight: bold;
+  background-color: lightgreen;
+}
+
+tr.total-row td:nth-child(4) {
+  font-weight: bold;
+}
+tr.date-row {
+  background-color: lightblue; /* Warna pemisah untuk setiap tanggal */
+  color: black;
+  font-weight: bold;
+}
+#button-area {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#progress {
+  display: none;
+  text-align: center;
+  color: #007bff;
+  margin-top: 10px;
+}
+
+.hapus-btn {
+  background-color: #dc3545;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hapus-btn:hover {
+  background-color: #c82333;
+}
+
+.no-print {
+  display: inline-block;
+}

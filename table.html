@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Data Management - Memet Supplier</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="card">
+    <label>Referensi:</label>
+    <input type="text" id="referensi" placeholder="Masukkan referensi" />
+    <label>Tanggal:</label>
+    <input type="date" id="tanggal" />
+    <label>Jumlah:</label>
+    <input type="number" id="jumlah" placeholder="Masukkan jumlah (Rp)" />
+    <button onclick="tambahData()">Tambah Data</button>
+  </div>
+
+  <div id="exportArea">
+    <table id="tabel">
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Referensi</th>
+          <th>Jumlah</th>
+          <th>Sub Total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="button-area">
+    <button onclick="hapusSemua()">Hapus Semua Data</button>
+    <button onclick="generatePDF()">Generate PDF</button>
+    <div id="progress">Sedang memproses PDF...</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
