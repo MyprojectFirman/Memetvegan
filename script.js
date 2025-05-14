@@ -20,7 +20,7 @@ function tambahData() {
     return;
   }
 
-  data.push({ referensi, tanggal, jumlah });
+  data.push({ id: Date.now(), referensi, tanggal, jumlah });
   simpanKeStorage();
   renderTabel();
 
@@ -29,10 +29,18 @@ function tambahData() {
   document.getElementById("jumlah").value = "";
 }
 
-function hapusSemua() {
-  data = [];
+function hapusData(id) {
+  data = data.filter(item => item.id !== id);
   simpanKeStorage();
   renderTabel();
+}
+
+function hapusSemua() {
+  if (confirm("Yakin ingin menghapus semua data?")) {
+    data = [];
+    simpanKeStorage();
+    renderTabel();
+  }
 }
 
 function renderTabel() {
@@ -53,7 +61,6 @@ function renderTabel() {
       const subtotal = items.reduce((sum, x) => sum + x.jumlah, 0);
       grandTotal += subtotal;
 
-      // Create a row for each date as a separator
       const dateRow = document.createElement("tr");
       dateRow.classList.add("date-row");
       const tdDate = document.createElement("td");
@@ -87,6 +94,15 @@ function renderTabel() {
           tr.appendChild(tdSubtotal);
         }
 
+        const tdAksi = document.createElement("td");
+        tdAksi.classList.add("no-print");
+        const btnDelete = document.createElement("button");
+        btnDelete.className = "hapus-btn";
+        btnDelete.innerHTML = "&#128465;";
+        btnDelete.onclick = () => hapusData(item.id);
+        tdAksi.appendChild(btnDelete);
+        tr.appendChild(tdAksi);
+
         tbody.appendChild(tr);
       });
     });
@@ -95,15 +111,22 @@ function renderTabel() {
   totalRow.classList.add("total-row");
 
   const tdKosong = document.createElement("td");
-  tdKosong.colSpan = 2;
+  tdKosong.colSpan = 1;
+  
+  const tdKosong2 = document.createElement("td");
   const tdLabel = document.createElement("td");
   tdLabel.textContent = "Total Keseluruhan";
   const tdTotal = document.createElement("td");
   tdTotal.textContent = `Rp ${grandTotal.toLocaleString("id-ID")}`;
+  const tdEmpty = document.createElement("td");
+  tdEmpty.classList.add("no-print");
 
   totalRow.appendChild(tdKosong);
+  totalRow.appendChild(tdKosong2);
   totalRow.appendChild(tdLabel);
   totalRow.appendChild(tdTotal);
+  totalRow.appendChild(tdEmpty);
+
   tbody.appendChild(totalRow);
 }
 
@@ -126,16 +149,20 @@ async function generatePDF() {
     doc.addImage(logoImg, 'PNG', (pdfWidth - 400) / 2, 200, 400, 400);
     doc.setGState(new doc.GState({ opacity: 1 }));
 
-    const element = document.getElementById("exportArea");
+    // Sembunyikan kolom aksi sebelum render PDF
+    document.querySelectorAll(".no-print").forEach(el => el.style.display = "none");
 
+    const element = document.getElementById("exportArea");
     const canvas = await html2canvas(element, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL('image/png');
-
     const imgProps = { width: canvas.width, height: canvas.height };
     const pdfTableHeight = (imgProps.height * (pdfWidth - 80)) / imgProps.width;
 
     doc.addImage(imgData, 'PNG', 40, 70, pdfWidth - 80, pdfTableHeight);
     doc.save("data-management.pdf");
+
+    // Tampilkan kembali elemen aksi
+    document.querySelectorAll(".no-print").forEach(el => el.style.display = "inline-block");
 
     document.getElementById("progress").style.display = "none";
   };
