@@ -46,7 +46,6 @@ table {
   background-color: #ffffff;
   border: 1px solid #ccc;
   box-shadow: 0 0 10px black;
- 
 }
 
 th {
@@ -79,11 +78,13 @@ tr.total-row td {
 tr.total-row td:nth-child(4) {
   font-weight: bold;
 }
+
 tr.date-row {
-  background-color: lightblue; /* Warna pemisah untuk setiap tanggal */
+  background-color: lightblue;
   color: black;
   font-weight: bold;
 }
+
 #button-area {
   text-align: center;
   margin-top: 20px;
@@ -97,18 +98,23 @@ tr.date-row {
 }
 
 .hapus-btn {
-  background-color: #dc3545;
-  color: white;
-  padding: 5px 10px;
+  background-color: transparent;
+  color: red;
+  font-size: 18px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
 }
 
 .hapus-btn:hover {
-  background-color: #c82333;
+  color: darkred;
 }
 
 .no-print {
   display: inline-block;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
 }
